@@ -11,14 +11,14 @@ exports.saveMaketInfo = function(req,res){
         var query = {_id:ObjectID(req.body._id)};
         delete req.body._id;
         mk.update(query,{"$set":req.body},function(data){
-            return res.json({code:200,msg:'更新成功'});
+            return res.json({code:200,msg:'鏇存柊鎴愬姛'});
         })
     }else{
         var oid = new ObjectID().toString();
         oid = oid.slice(18);
         req.body.dbname = oid+'MOrders'; //a6452cMOrders
         mk.save(req.body,function(data){
-            return res.json({code:200,msg:'保存成功'})
+            return res.json({code:200,msg:'淇濆瓨鎴愬姛'})
         })
     }
 };
@@ -26,7 +26,7 @@ exports.saveMaketInfo = function(req,res){
 exports.findById = function(req,res){
     var query = {_id:ObjectID(req.body._id)};
     mk.find(query,function(data){
-        return res.json({code:200,data:data.items[0]||[],msg:'查询完成'});
+        return res.json({code:200,data:data.items[0]||[],msg:'鏌ヨ瀹屾垚'});
     })
 };
 
@@ -43,6 +43,6 @@ exports.selMaketInfoByPage = function(req,res){
 exports.delMaketInfo = function(req,res){
     var query = {_id:ObjectID(req.body._id)};
     mk.delete(query,function(data){
-        return res.json({code:200,msg:'删除成功'});
+        return res.json({code:200,msg:'鍒犻櫎鎴愬姛'});
     })
 };
