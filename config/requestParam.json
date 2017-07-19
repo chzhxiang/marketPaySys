@@ -1,0 +1,74 @@
+{
+  "list": [
+    {
+      "url": "/app/getUserRelations",
+      "params":{
+        "type":1,
+        "page":1
+      }
+    },
+    {
+      "url": "/app/getUserRelations",
+      "params":{
+        "address":"dddd",
+        "isDefault":0,
+        "telphone":"111111",
+        "recvUserName":"ssss",
+        "addressid":"sfsdfsdf"
+      }
+
+    },
+
+    {
+      "url": "/app/appPay",
+      "params":{
+        "orderGoods": [
+          {
+            "showGood": {
+              "goodId": "56fd04bdc35ecb5803558725",
+              "goodEditId": "56fd04bdc35ecb5803558726",
+              "endImgUrl": "7xs8gn.com1.z0.glb.clouddn.com/%40%2Fimages%2F10000%2F1459422308096.png",
+              "goodsName": "微信app支付测试商品",
+              "specType": 1,
+              "price": 0.01,
+              "buyNo": 2,
+              "count": 0.02
+            },
+            "logistics": {
+              "price": 0.01
+            },
+            "allRmb": 0.03
+          }
+        ],
+        "buyObj": {
+          "Address": "厦门集美区",
+          "Telephone": "18650171680",
+          "name": "林小样"
+        },
+        "countAll": 0.05,
+        "openid": "o8Zu6wrXRz2_l9f00ZgzG3rIcvz0",
+        "body": "微信app支付测试",
+        "payType": "appWxPay"
+      }
+
+    },
+
+    {
+      "url": "/app/goodsOrder/orderMsg",
+      "params":{
+        "orderId":"5706247c7cbf41635fc3ff83",
+        "msgState": 1
+      }
+
+    },
+
+    {
+      "url": "/app/goodsOrder/SaveLogist",
+      "params":{
+        "orderId":"56eb7e93b6c78d7819cca341",
+        "sendCom":"申通快递",
+        "sendNo":"3305286213160"
+      }
+    }
+  ]
+}
