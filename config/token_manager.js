@@ -44,11 +44,11 @@ var getToken = function(headers) {
 			return part[1];
 		}
 		else {
-			return null;
+			return {code:400};
 		}
 	}
 	else {
-		return null;
+		return {code:400};
 	}
 };
 exports.saveAppSig=function(key,key_value,expire_sec){

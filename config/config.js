@@ -73,36 +73,15 @@ config.orderDefReceTime=3600*24*15;
 //config.redisIp='120.25.217.213';
 //config.redisProt=6379;
 
+// config.redisAuth='Trutymaker201506';
+// config.redisIp='139.196.186.249';
+// config.redisProt=6379;
+
 config.redisAuth='Trutymaker201506';
-config.redisIp='139.196.186.249';
+config.redisIp='120.25.103.145';
 config.redisProt=6379;
 
-//config.redisAuth='Trutymaker201506';
-//config.redisIp='120.25.103.145';
-//config.redisProt=6379;
+config.QRcodeUrl = 'http:192.168.0.123:5500/getOrderById';
 
-//管理者userid
-config.messageid = '56f9e182a8fd145d1ab20289';
-
-
-//注册即送虚拟币
-config.giftSendMoney=28888;
-config.giftSendName='注册即送1';
-
-//每日分享、登入即送 giftShareSendMoney-分享即送  giftLogSendMoney= 登入即送{1:30,2:40,3:50,4:50,5:60,6:70,7:80} 周一至周天
-config.giftShareSendMoney=1;
-config.giftLogSendMoney={1:1,2:1,3:1,4:1,5:1,6:1,7:1};
-
-
-//红包过期时间 /秒
-config.redDefReceTime=3600*24;
-
-config.payNoKey='GG_';//生产GG_ 测试GT_
-config.payList='GPayList';//生产GG_ 测试GT_
-
-//商品内容地址
-config.GoodsInfoUrl = 'http://www.geegot.com/lifeShop?';
-
-config.toWeiDian = 'weidianbuyer://wdb/goods_detail?itemId=';
 
 module.exports = config;

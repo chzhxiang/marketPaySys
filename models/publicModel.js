@@ -6,7 +6,6 @@
  */
 var db = require('./../db/mongo.js'),
     CRUD = require('./../db/CURD.js');
-//var crud;
 var async = require('async');
 
 var pm = function (modelname) {
@@ -20,6 +19,11 @@ var pm = function (modelname) {
 
     this.find =function (model, callback) {
         crud.read(model, function (data) {
+            callback(data);
+        });
+    };
+    this.findBySort = function (model,sort, callback) {
+        crud.readBySort(model, sort, function (data) {
             callback(data);
         });
     };
@@ -49,7 +53,7 @@ var pm = function (modelname) {
         crud.pagetotal(query, function (data) {
             callback(data);
         });
-    },
+    };
     this.pagesSel = function (query, pagenum, currentPage, sort, callback) {
         async.waterfall([
             function pagetotal(cb) {
@@ -94,6 +98,12 @@ var pm = function (modelname) {
         });
 
     };
+    this.near = function (query, callback) {
+        crud.near(query, function (data) {
+            callback(data);
+        });
+    };
 
 };
+
 module.exports = pm;

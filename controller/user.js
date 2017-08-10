@@ -1,19 +1,22 @@
 /**
  * Created by Administrator on 2017/7/18.
  */
-var pm = require( './models/publicModel');
-var users = new pm('users');
+var pm = require( './../models/publicModel');
+var users = new pm('mkusers');
 var tokenManager = require('../config/token_manager');
 var secret = require('../config/secret');
 var jwt = require('jsonwebtoken');
 var ObjectID = require('mongodb').ObjectID;
+var url = require('url');
+var querystring = require('querystring');
+var http = require('http');
 
 var login = function(req,res){
     var query = {username:req.body.username};
     var user;
     var token;
     users.find(query,function(data){
-        if(data.status>0&&data.items.length){
+        if(data.status>0 && data.items.length>0){
             user = data.items[0];
             token = jwt.sign({
                 id: user._id,
@@ -31,7 +34,8 @@ var login = function(req,res){
                 },
                 msg: '登录成功'
             });
-        }else if(data.status>0&&data.items.length===0){
+        }else if(data.status>0 && data.items.length===0){
+            req.body.vercode && delete req.body.vercode;
             users.save(req.body,function(data){
                 user = data;
                 token = jwt.sign({
@@ -64,28 +68,35 @@ var login = function(req,res){
  * source:0, //手机号登陆
  * username:'',
  * vercode:'验证码',
+ * isAuto:1自动登录 0 手动
  *
  * source:1, //微信登陆
-  * username:unionid,
-  * nickname:'',
-  * pic:'',
-  * openid:'',
+ * username:unionid,
+ * nickname:'',
+ * pic:'',
+ * openid:'',
  * }
  *
  */
 exports.appLogIn = function(req,res){
+    // console.log(req.body);
     //source=0 手机号登陆 =1 微信登陆
     if(req.body.source === 0){
         //正则校验手机号
-        if(!(/^1[3|4|5|8][0-9]\d{4,8}$/.test(req.body.username))){
-            //获取验证码
-            tokenManager.getUserVercode(req.body.username,function(data){
-                if(data&&req.body.vercode.toString() == data){
-                    login(req,res)
-                }else{
-                    return res.json({code:400,msg:'验证码错误'})
-                }
-            })
+        if((/^1[3|4|5|8][0-9]\d{4,8}$/.test(req.body.username))){
+            if(req.body.isAuto === 0){
+                //获取验证码
+                tokenManager.getUserVercode(req.body.username,function(data){
+                    if(data&&req.body.vercode.toString() == data){
+                        login(req,res)
+                    }else{
+                        return res.json({code:400,msg:'验证码错误'})
+                    }
+                })
+            }else{
+                login(req,res)
+            }
+            
         } else {
             return res.json({code:400,msg:'手机号格式不正确'})
         }
@@ -127,7 +138,7 @@ var postVerCode = function(telphone,response){
             }).on('end', function () {
                 tokenManager.saveUserVercode(telphone, vercode, 3600);
 
-                response.send({ code: 200, data: {}, msg: '验证码已发送' });
+                response.send({ code: 200, msg: '验证码已发送' });
 
             });
         } else
@@ -145,16 +156,17 @@ var postVerCode = function(telphone,response){
  *获取验证码
  *  @param req = {
  *  username:'',
- * vercode:'验证码',
  * }
 *
 * */
 
 exports.getVerCode = function(req,res){
+    var params = url.parse(req.url, true).query;
+    console.log(params);
     //正则校验手机号
-    if(!(/^1[3|4|5|8][0-9]\d{4,8}$/.test(req.body.username))){
+    if((/^1[3|4|5|8][0-9]\d{4,8}$/.test(params.username))){
         //发送验证码
-        postVerCode(req.body.username,res);
+        postVerCode(params.username,res);
     } else {
         return res.json({code:400,msg:'手机号格式不正确'})
     }
@@ -183,6 +195,7 @@ exports.isLogIn = function (req, res) {
 * */
 
 exports.setUserInfo = function(req,res){
+    console.log(req.user);
     var query = {_id:ObjectID(req.user.user._id)};
     req.body._id && delete req.body._id
     var setModel = {"$set":req.body};
@@ -203,7 +216,7 @@ exports.setUserInfo = function(req,res){
 * */
 
 exports.getUserInfo = function(req,res){
-    var query = {_id:ObjectID(req.user.user._id)};
+    var query = {_id:ObjectID(req.user._id)};
     users.find(query,function(data){
         if(data.status>0&&data.items.length>0){
             return res.json({code:200,data:data.items[0],msg:'查询完成'});

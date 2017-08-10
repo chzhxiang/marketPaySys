@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
+    "arale": "^0.2.0",
     "async": "~1.5.2",
     "bcryptjs": "2.3.0",
     "body-parser": "~1.0.2",
@@ -16,29 +17,33 @@
     "json": "0.0.14",
     "jsonwebtoken": "0.4.1",
     "jssha": "2.0.2",
+    "later": "1.2.0",
     "lodash": "^4.6.1",
     "md5": "2.0.0",
     "moment": "~2.8.0",
     "mongodb": "1.4.39",
     "mongoskin": "1.4.13",
     "morgan": "~1.0.1",
+    "mssql": "^4.0.4",
+    "node-xlsx": "0.6.0",
     "nodemailer": "0.7.1",
     "objectid": "3.2.1",
     "qcloud_video": "1.0.4",
+    "qiniu": "6.1.9",
+    "qr-image": "3.1.0",
     "redis": "~0.10.1",
     "request": "2.61.0",
     "serve-favicon": "2.3.0",
+    "socket.io": ">= 0.9.6",
+    "transliteration": "^1.6.2",
     "urllib": "2.4.0",
     "wechat": "2.0.1",
     "xls-to-json": "0.3.2",
     "xml2js": "0.4.12",
     "xmldom": "0.1.19",
-    "xpath.js": "1.0.6",
-    "qiniu": "6.1.9",
-    "later":"1.2.0",
-    "arale":"^0.2.0",
-    "socket.io": ">= 0.9.6",
-    "qr-image":"3.1.0",
-    "node-xlsx":"0.6.0"
+    "xpath.js": "1.0.6"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.24.1"
   }
 }

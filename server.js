@@ -9,7 +9,7 @@ var publicconfig=require('./config/config');
 var multipart = require('connect-multiparty');
 var route=require('./routes.js');
 var multipartMiddleware = multipart({uploadDir:publicconfig.tmppath});
-app.listen(3001);
+app.listen(5500);
 
 app.use(bodyParser({limit:'2mb'}));//修改post body 内容最大值
 app.use(morgan());
