@@ -22,6 +22,9 @@ exports.config = function (app) {
     app.get('/mkps/order/getOrderById', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.order.getOrderById);
     app.get('/mkps/order/getOrdersByPages', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.order.getOrdersByPages);
     app.post('/mkps/order/orderPay', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.order.orderPay);
+    app.post('/mkps/order/createOrder', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.order.createOrder);
+    app.post('/mkps/order/delOrder',jwt({secret:secret.secretToken}),tokenManager.verifyToken,routes.order.delOrder);
+
 
     routes.shoppingBig = require('./controller/ShoppingBag.js');
     app.post('/mkps/shoppingBig/setShoppingBag', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.shoppingBig.setShoppingBag);
@@ -41,4 +44,5 @@ exports.config = function (app) {
     app.get('/mkps/markets/findById', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.markets.findById);
     app.get('/mkps/markets/selMaketInfoByPage', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.markets.selMaketInfoByPage);
     app.post('/mkps/markets/delMaketInfo', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.markets.delMaketInfo);
+    app.get('/mkps/markets/getMaketInfo', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.markets.getMaketInfo);
 };

@@ -98,10 +98,20 @@ var pm = function (modelname) {
         });
 
     };
-    this.near = function (query, callback) {
-        crud.near(query, function (data) {
+    this.near = function (query, sort,callback) {
+        crud.near(query, sort,function (data) {
             callback(data);
         });
+    };
+    this.ensureIndex = function(query,callback){
+        crud.ensureIndex(query,function(data){
+            callback(data);
+        })
+    };
+    this.command = function(query,callback){
+        crud.command(query,function(data){
+            callback(data);
+        })
     };
 
 };

@@ -483,14 +483,25 @@ CRUD.prototype = {
      * 
      * 
      */
-    near: function (query, callback) {
-        db[this.collection].find(query).toArray(function (err, datas) {
-            console.log(err);
-            if (err) {
-                return callback(status.fail);
-            }
-            return callback(datas);
-        })
+    near: function (query, sort,callback) {
+        if (sort) {
+            db[this.collection].find(query,sort).toArray(function (err, datas) {
+                console.log(err);
+                if (err) {
+                    return callback(status.fail);
+                }
+                return callback(datas);
+            })
+        } else {
+            db[this.collection].find(query).toArray(function (err, datas) {
+                console.log(err);
+                if (err) {
+                    return callback(status.fail);
+                }
+                return callback(datas);
+            })
+        }
+        
     },
 
     /**
@@ -504,9 +515,21 @@ CRUD.prototype = {
             if (err) {
                 return callback(status.fail);
             }
-            return callback(datas);
+            return callback(data);
         })
     },
+
+    command: function (query, callback){
+        db.command({ geoNear : this.collection , near : query.near, num : query.num , spherical:true, 
+        distanceMultiplier: 6378137, maxDistance:query.maxDistance,query:{type:query.type}},function (err, data) {
+            console.log(err);
+            if (err) {
+                return callback(status.fail);
+            }
+            return callback(data);
+        });
+    } 
+    
 
 };
 

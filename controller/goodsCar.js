@@ -30,9 +30,12 @@ exports.addGoodsCar = (req, res) => {
     //         }
     //     })
     // });
-    const query = { "goodsInfo.barCode": req.body.goodsInfo.barCode, userId: req.user.user._id };
+    let query = { "goodsInfo.gid": req.body.goodsInfo.gid, userId: req.user.user._id };
+    if (req.body.goodsInfo.barCode) {
+        query = { "goodsInfo.barCode": req.body.goodsInfo.barCode, userId: req.user.user._id };
+    }
     goodCar.find(query, (reD) => {
-    
+
         try {
             if (reD.status > 0 && reD.items.length > 0) {
                 let setModel = { "$inc": { "goodsInfo.count": req.body.goodsInfo.count } }
