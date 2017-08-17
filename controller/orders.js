@@ -10,6 +10,8 @@ const qr = require('qr-image');
 const file = require('./file.js');
 const config = require('./../config/config.js');
 const goodCar = new pm('mkGoodsCar');
+const wxpay = require('./wxpay');
+const alipay = require('./../alipay/index');
 
 /*
 * 分页获取订单
@@ -122,29 +124,52 @@ exports.createOrder = (req, res) => {
  * 2.支付
  * 3.删除购物车
  * @param = {
- *  payType:'支付方式'
+ *  payType:'支付方式'    // Zhifubao=1, Weixin=2,Yiwangtong=3,Yinlian=4,
  *  oid:'订单编号'
  *  shopId:''
  * }
  * 
+ * 
  */
 
 exports.orderPay = (req, res) => {
+    console.log(req.body);
     const query = { oid: req.body.oid };
     const payNo = new ObjectID().toString();
-    const setModel = { "$set": { payType: req.body.payType, payNo: payNo, orderStatus: 1 } };
-
-    mkOrder.update(query, setModel, (data) => {
-        console.log(data);
+    const setModel = { "$set": { payType: req.body.payType, payNo: payNo} };
+    mkOrder.find(query,data => {
         try {
-            //删除购物车
-            delGoodsCar(query);
-            return res.json({ code: 200, msg: '支付成功' });
+            if (data.status>0&&data.items.length>0) {
+                req.body.countAll = 0;
+                data.items[0].goodsInfo.forEach(e=>{
+                    req.body.countAll += Number(e.price)*Number(e.count);
+                });
+                req.body.body = `购买${data.items[0].goodsInfo[0].goodsName}等商品`;
+                req.body.payNo = payNo;
+
+                mkOrder.update(query, setModel, (data) => {
+                })
+                if(req.body.payType==2){//支付
+                    wxpay.appOrders(req.body,req,res);
+                }else if(req.body.payType==1){
+                    alipay.appOrders(req.body,req,res);
+                }else{
+                    res.send({code:400,msg:'暂时不支持改支付类型'});
+                }
+
+
+            } else if (data.status>0&&data.items.length===0) {
+                return res.json({ code: 400, msg: '订单不存在' });
+            } else {
+                 return res.json({ code: 400, msg: '网络错误' });
+            }
         } catch (error) {
+            console.log(error);
             return res.json({ code: 400, msg: '网络错误' });
         }
     })
 }
+
 
 const saveMKorders = (orderInfo, res) => {
     mkOrder.save(orderInfo, (reData) => {
@@ -222,6 +247,25 @@ exports.delOrder = (req, res) => {
             return res.json({ code: 200, msg: '取消/删除订单成功' });
         } catch (error) {
             console.log(error)
+            return res.json({ code: 400, msg: '网络错误' });
+        }
+    })
+}
+
+/**
+ *
+ *
+ * */
+exports.paySuccess = (req, res) => {
+    const query = { oid: req.body.oid };
+    const setModel = { "$set": { orderStatus: 1 } };
+    mkOrder.update(query, setModel, (data) => {
+        //console.log(data);
+        try {
+            //删除购物车
+            delGoodsCar(query);
+            return res.json({ code: 200, msg: '支付成功' });
+        } catch (error) {
             return res.json({ code: 400, msg: '网络错误' });
         }
     })

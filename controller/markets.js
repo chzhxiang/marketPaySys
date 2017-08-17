@@ -2,12 +2,12 @@
  * Created by Administrator on 2017/7/18.
  *
  **/
-var pm = require('./../models/publicModel');
-var mk = new pm('markets');
-var ObjectID = require('mongodb').ObjectID;
-var url = require('url');
-var request = require('request');
-var citysfig = require('./../config/cityNamefig');
+const pm = require('./../models/publicModel');
+const mk = new pm('markets');
+const ObjectID = require('mongodb').ObjectID;
+const url = require('url');
+const request = require('request');
+const citysfig = require('./../config/cityNamefig');
 
 /**
  * 保存店铺信息
@@ -21,52 +21,52 @@ var citysfig = require('./../config/cityNamefig');
  * }
  * 
  */
-exports.saveMaketInfo = function(req,res){
+exports.saveMaketInfo = (req,res)=>{
     if(req.body._id){
-        var query = {_id:ObjectID(req.body._id)};
+        const query = {_id:ObjectID(req.body._id)};
         delete req.body._id;
-        mk.update(query,{"$set":req.body},function(data){
+        mk.update(query,{"$set":req.body},(data)=>{
             return res.json({code:200,msg:'更新成功'});
         })
     }else{
 
-        var sliId = new ObjectID().toString().slice(18);
+        const sliId = new ObjectID().toString().slice(18);
         for (let i=0,len=citysfig.length; i<len; i++){
-            if (citysfig[i].name ==='厦门') {
+            if (citysfig[i].name ===req.body.city) {
                 req.body.letter = citysfig[i].pinyin.slice(0, 1);//获取城市名称第一个字大写首字母
                 break;
             }
         }
         req.body.orderDbName = sliId+'MOrders'; //a6452cMOrders
         req.body.goodCarDbName = sliId+'GoodsCar'; 
-        mk.save(req.body,function(data){
+        mk.save(req.body,(data)=>{
             return res.json({code:200,msg:'保存成功'});
         })
     }
 };
 
 exports.findById = function(req,res) {
-    var params = url.parse(req.url,true).query;
-    var query = {_id:ObjectID(params._id)};
-    mk.find(query,function(data) {
+    const params = url.parse(req.url,true).query;
+    const query = {_id:ObjectID(params._id)};
+    mk.find(query,(data)=> {
         return res.json({code:200,data:data.items[0]||{},msg:'查询完成'});
     })
 };
 
-exports.selMaketInfoByPage = function(req,res) {
-    var params = url.parse(req.url,true).query;
-    var page_size = number(params.page_size);
-    var page = number(params.page);
-    var sort = null;
-    mk.pagesSel(null,page_size,page,sort,function(data) {
+exports.selMaketInfoByPage = (req,res)=> {
+    const params = url.parse(req.url,true).query;
+    const page_size = number(params.page_size);
+    const page = number(params.page);
+    let sort = null;
+    mk.pagesSel(null,page_size,page,sort,(data)=> {
         return res.send(data);
     })
 };
 
 
-exports.delMaketInfo = function(req,res){
-    var query = {_id:ObjectID(req.body._id)};
-    mk.delete(query,function(data){
+exports.delMaketInfo = (req,res)=>{
+    const query = {_id:ObjectID(req.body._id)};
+    mk.delete(query,(data)=>{
         return res.json({code:200,msg:'删除成功'});
     })
 };

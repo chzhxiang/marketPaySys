@@ -24,7 +24,7 @@ exports.config = function (app) {
     app.post('/mkps/order/orderPay', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.order.orderPay);
     app.post('/mkps/order/createOrder', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.order.createOrder);
     app.post('/mkps/order/delOrder',jwt({secret:secret.secretToken}),tokenManager.verifyToken,routes.order.delOrder);
-
+    app.post('/mkps/order/paySuccess',jwt({secret:secret.secretToken}),tokenManager.verifyToken,routes.order.paySuccess);
 
     routes.shoppingBig = require('./controller/ShoppingBag.js');
     app.post('/mkps/shoppingBig/setShoppingBag', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.shoppingBig.setShoppingBag);
@@ -45,4 +45,15 @@ exports.config = function (app) {
     app.get('/mkps/markets/selMaketInfoByPage', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.markets.selMaketInfoByPage);
     app.post('/mkps/markets/delMaketInfo', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.markets.delMaketInfo);
     app.get('/mkps/markets/getMaketInfo', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.markets.getMaketInfo);
+
+
+    //routes.alipay = require('./alipay/index.js');
+    //
+    //app.post('/mkps/alipay/paynotify', routes.alipay.alipayNotify);//支付宝支付回调
+    //
+    //routes.wxpay = require('./controller/wxpay.js');
+    //app.post('/mkps/wxpay/AppOrderPayUrl', routes.wxpay.AppOrderPayUrl);//微信支付回调
+
+
 };
+
