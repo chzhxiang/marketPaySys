@@ -17,6 +17,12 @@ exports.config = function (app) {
     app.post('/mkps/user/setUserInfo', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.users.setUserInfo);
     app.get('/mkps/user/getUserInfo', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.users.getUserInfo);
     app.get('/mkps/user/getVerCode', routes.users.getVerCode);
+    app.post('/mkps/user/loginOn', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.users.loginOn);
+    app.post('/mkps/user/loginIn', routes.users.loginIn);
+    app.get('/mkps/user/userList', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.users.userList);
+
+    routes.filemanger = require('./controller/file.js');
+    app.post('/mkps/filemanger/appupload', routes.filemanger.upload);
 
     routes.order = require('./controller/orders.js');
     app.get('/mkps/order/getOrderById', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.order.getOrderById);
@@ -25,6 +31,8 @@ exports.config = function (app) {
     app.post('/mkps/order/createOrder', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.order.createOrder);
     app.post('/mkps/order/delOrder',jwt({secret:secret.secretToken}),tokenManager.verifyToken,routes.order.delOrder);
     app.post('/mkps/order/paySuccess',jwt({secret:secret.secretToken}),tokenManager.verifyToken,routes.order.paySuccess);
+    app.post('/mkps/order/wxAppletPay', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.order.wxAppletPay);
+    app.post('/mkps/order/createOrderQRcode', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.order.createOrderQRcode);
 
     routes.shoppingBig = require('./controller/ShoppingBag.js');
     app.post('/mkps/shoppingBig/setShoppingBag', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.shoppingBig.setShoppingBag);
@@ -46,6 +54,12 @@ exports.config = function (app) {
     app.post('/mkps/markets/delMaketInfo', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.markets.delMaketInfo);
     app.get('/mkps/markets/getMaketInfo', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.markets.getMaketInfo);
 
+    // routes.menu = require('./controller/menu.js');
+    // app.get('/mkps/menu', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.menu.menu);
+
+    //后台首页
+    // routes.dashboard = require('./controller/dashboard.js');
+    // app.get('mkps/dashboard',jwt({secret: screen.secretToken}), tokenManager.verifyToken, routes.dashboard.dashboard);
 
     //routes.alipay = require('./alipay/index.js');
     //

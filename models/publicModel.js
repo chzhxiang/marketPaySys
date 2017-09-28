@@ -127,10 +127,18 @@ class pm {
          this.crud = new CRUD(modelname);
     }
     save(model,callback){
-        this.crud.create(model, (data)=> {
-                callback(data);
-            }
-        );
+        this.crud.create(model, (data) => {
+            // try {
+            //     if (data.status > 0) {
+            //         callback({ code: 200, msg: '保存成功' });
+            //     } else {
+            //         callback({ code: 400, msg: '网络错误' });
+            //     }
+            // } catch (error) {
+            //     callback({ code: 400, msg: '网络错误' })
+            // }
+            callback(data);
+        });
     };
 
     find(model, callback) {
@@ -171,9 +179,10 @@ class pm {
         });
     };
     pagesSel(query, pagenum, currentPage, sort, callback) {
+        const that = this.crud;
         async.waterfall([
-            function pagetotal(cb) {
-                this.crud.pagetotal(query, (data)=> {
+            function ptotal(cb) {
+                that.pagetotal(query, (data)=> {
                     cb(null, data);
                 });
             },
@@ -197,7 +206,7 @@ class pm {
                     if(sort){
                         orderby={sort:[sort]}
                     }
-                    this.crud.page(query, pagenum, currentPage, (data)=> {
+                    that.page(query, pagenum, currentPage, (data)=> {
                         pageObj.data = data;
                         cb(null, pageObj);
                     }, orderby);
@@ -228,6 +237,11 @@ class pm {
         this.crud.command(query,data=>{
             callback(data);
         })
+    };
+    aggregate(array,callback){
+        this.crud.aggregate(array,(data)=>{
+            callback(data);
+        });
     }
 }
 

@@ -58,7 +58,7 @@ const addGoods = (goodsInfo) => {
    goodsInfo.gid = new ObjectID().toString();
     goods.save(goodsInfo,(reData) => {
         try {
-            console.log(reData.status);
+            // console.log(reData.status);
         } catch (error) {
             console.log(error);
         }
@@ -66,30 +66,17 @@ const addGoods = (goodsInfo) => {
 }
 // (function(){
 //     const goodsArr = [{
-//         goodsName:'雪碧1.25升',
-//         specs:'1.25升',
-//         price:9.50,   
-//         barCode:'6928804010367',
+//         goodsName:'心相印茶语纸面巾',
+//         specs:'',
+//         price:6.80,   
+//         barCode:'6922868285747',
 //         stocks:100
 //     },
 //     {
-//         goodsName:'金骏眉125克',
-//         specs:'125克',
-//         price:99.99,   
-//         barCode:'6931285900256',
-//         stocks:100
-//     },{
-//         goodsName:'晨光笔芯',
-//         specs:'支',
-//         price:0.50,   
-//         barCode:'6953787341795',
-//         stocks:100
-//     },
-//     {
-//         goodsName:'快乐家族抽纸400张',
-//         specs:'包',
-//         price:3.5,   
-//         barCode:'6954757222212',
+//         goodsName:'伊利优酸乳蓝莓味',
+//         specs:'250ml',
+//         price:2.50,   
+//         barCode:'6907992502588',
 //         stocks:100
 //     }]
 //     goodsArr.forEach(e=>{

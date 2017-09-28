@@ -27,7 +27,6 @@ module.exports = function (options) {
                 return next();
             }
         }
-
         if (req.headers && req.headers.authorization) {
             var parts = req.headers.authorization.split(' ');
             if (parts.length == 2) {

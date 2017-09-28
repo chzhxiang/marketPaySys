@@ -10,6 +10,7 @@ var ObjectID = require('mongodb').ObjectID;
 var url = require('url');
 var querystring = require('querystring');
 var http = require('http');
+const bcrypt = require('bcryptjs');
 
 var login = function(req,res){
     var query = {username:req.body.username};
@@ -63,7 +64,7 @@ var login = function(req,res){
 
 
 /**
- * 登陆
+ * app登陆
  * @param req = {
  * source:0, //手机号登陆
  * username:'',
@@ -105,6 +106,7 @@ exports.appLogIn = function(req,res){
         login(req,res)
     }
 };
+
 
 var postVerCode = function(telphone,response){
     var vercode = Math.floor((Math.random() * 9 + 1) * 100000); //生成六位随机数
@@ -186,6 +188,87 @@ exports.isLogIn = function (req, res) {
     return res.json({ code: 200});
 };
 
+
+/**
+ * 后台登陆
+ * @param {
+ *  source:2, //后台登陆
+ *  username:'',
+ *  password:'',
+ * }
+ */
+exports.loginIn = (req,res)=>{
+    if(!req.body.username||!req.body.password) {
+        return res.json({status:400,msg:'用户名或密码有误'});
+    } else {
+        const query = {username:req.body.username};
+        users.find(query,function(data){
+            if(data.status>0 && data.items.length>0){
+                bcrypt.compare(req.body.password,data.items[0].password,function (err, isMatch) {
+                    if (err) 
+                        return res.send({ status: 404, msg: '网络错误' });
+                    if(isMatch){
+                        user = data.items[0];
+                        token = jwt.sign({
+                            id: user._id,
+                            user: user,
+                        }, secret.secretToken, { expiresInMinutes: tokenManager.TOKEN_EXPIRATION * 7 });
+                        return res.json({
+                            status: 201,
+                            token: token,
+                            msg: '登录成功'
+                        });
+                    }else{
+                        return res.send({ status: 404, msg: '密码不正确' });
+                    }
+                })
+            }else if(data.status>0 && data.items.length===0){
+                return res.send({ status: 201, msg: '无此用户' });
+            }else {
+                return res.send({ status: 404, msg: '登录失败' });
+            }
+        })
+    }
+}
+
+exports.loginOn = (req,res)=> {
+    return res.json({status:200,user:req.user.user});
+}
+
+/**
+ * 后台注册
+ * @param {
+ *  username:'',
+ *  password:'',
+ * }
+ */
+exports.register = (req,res)=> {
+    const query = {username:req.body.username};
+    users.find(query,(d)=>{
+        if(d.status>0&&d.items.length>0){
+            return res.json({status:200,msg:'用户已存在'});
+        }else if(d.status>0&&d.items.length===0){
+        //加密
+        req.body.password = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
+        users.save(req.body,(data)=>{
+            user = data;
+            token = jwt.sign({
+                id: user._id,
+                user: user,
+            }, secret.secretToken, { expiresInMinutes: tokenManager.TOKEN_EXPIRATION * 7 });
+            return res.json({
+                status: 201,
+                token: token,   
+                msg: '注册成功'
+            });
+        })
+        }else{
+            return res.json({status:400,msg:'网络错误'})
+        }
+    })
+   
+}
+
 /*
 *设置账户信息
 *@param req = {
@@ -195,7 +278,6 @@ exports.isLogIn = function (req, res) {
 * */
 
 exports.setUserInfo = function(req,res){
-    console.log(req.user);
     var query = {_id:ObjectID(req.user.user._id)};
     req.body._id && delete req.body._id
     var setModel = {"$set":req.body};
@@ -216,15 +298,18 @@ exports.setUserInfo = function(req,res){
 * */
 
 exports.getUserInfo = function(req,res){
-    var query = {_id:ObjectID(req.user._id)};
+    var query = {_id:ObjectID(req.user.user._id)};
     users.find(query,function(data){
         if(data.status>0&&data.items.length>0){
-            return res.json({code:200,data:data.items[0],msg:'查询完成'});
+            return res.json({code:200,data:data.items[0]||{},msg:'查询完成'});
         }else if(data.status>0&&data.items.length===0){
-            return res.json({code:200,data:[],msg:'查询完成'});
+            return res.json({code:200,data:{},msg:'查询完成'});
         }else{
-            return res.json({code:400,data:[],msg:'网络错误'});
+            return res.json({code:400,data:{},msg:'网络错误'});
         }
     })
 };
 
+exports.userList = (req,res)=>{
+    return res.json({status:200,data:[]});
+}

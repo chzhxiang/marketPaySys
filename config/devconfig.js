@@ -3,8 +3,8 @@ var config = {};
 
 config.blogName = 'myBlog';
 config.url = 'http://localhost/';
-config.filepath='/public/images/';
-config.tmppath='/public/tmp/';
+// config.filepath='/public/images/';
+// config.tmppath='/public/tmp/';
 //config.fileserverid='http://139.196.186.249:8080';
 config.fileserverid='http://120.25.103.145:8080';
 config.rss = {
@@ -26,9 +26,9 @@ config.Secret_Key='xB8gNLob1YxLQ6zCb03TUVCSX_d8G7dVQOxqD2BJ';
 config.BucketName='trutyfile';
 config.DomainName='http://images.truty.cn/';
 //友盟推送设置
-config.umPushAppid='56725998e0f55a2150001566';
-config.umPushKey='mblxzg7ctsfvynhwhb6i2hubugy9rjst';
-config.umproduction_mode='true';
+// config.umPushAppid='56725998e0f55a2150001566';
+// config.umPushKey='mblxzg7ctsfvynhwhb6i2hubugy9rjst';
+// config.umproduction_mode='true';
 
 //支付回调地址
 config.payCallBackIp='http://api.truty.cn';
@@ -60,6 +60,16 @@ config.wxApppay = {
 config.wxWebpay ={
   appid: "wx4014e5ef589698bd",
   mch_id: "1416840402",
+  partner_key : "TRUTYmaker201506TRUTYmaker201506",
+  key : "-----BEGIN PRIVATE KEY-----\r\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC4TTKfRUlfsmgW\r\nDx0JwwkzcvU6206cRkzxe26Su0Q+sNvj7UhicR6xNQaZIW8ZHxQivvLrk57irJSv\r\n9PnQTeYJ9RyoCd60nafEFRS/V9p8vA/XZhtisebyTGuWy1jOST1Rdpa/n+MMrSTq\r\nDdHLsW3UzjeQOol9yJsS/gXzUwNhgofRKm9pvOMjQP+JfpXz0KYxCZPvneUJJIou\r\nD4KDZG7NjmL1z+b22IJQUoUtBBbmF7d5AKdcfVrlFmRpAjoNPhT3JihFdIPozTz5\r\n+5y97HrQUy9Tb24PrcLVgp1cWN1SWwI25xU/1QWBq8ZqkxAVPqR7UMQLX9j3kwaV\r\nPWsBvV6NAgMBAAECggEAPt2+XcvRmn4NuTCQlCreMZmOAvSZ3P6x8lFLR2vvfH7x\r\nks72uPWjJYlT5docvnH2eV+vFyJ0uRdrZJXovOBFjrH4g21SdUOt3VnfiOFb2t5/\r\nfNcMkl7iy1W8AWT9tugOrYIJK/ZLCaDqDZiHLrcoIsXw+BavnaNXGmRh/T0c0x6S\r\nCABa1gS1X9ITMgiqPjqGIX/QZ6/NxGJuVw6D2v66Ludg9XA57hJ/6tawLVMyc5RC\r\n1PVv7cSv9HOpiC3EFf7efVdwNWplSDVlj/2RXyu8AdwjC0pyxbyj/HyQpe2NnLat\r\npCTGHb4+E7tLMei3VPv16a5Cp4hgvKY2TU+4nXbBYQKBgQDi2XljRUJmswVnaGG0\r\nnb1Mmvmn1UrzFvzfiUQoxCcyACkg424u/GHVDMHCvjZ2q53LKTyqLLwXq+aTcyDA\r\nBR5ZRUHEPlC4mx9lEvmzTMpIvpAwDAL0BqO+IMIrjU6EAMWqXViqM5zsrQBzMGu5\r\nUjspkbSarwfEzU6j5ZNH3mPLiQKBgQDP/AzbSSm/ezid3Yb25pjfB/i+0Ut/Eq/F\r\nj5CVA7lzYoAFoenlh4H6yYfQze1cW4RxQBuyqzUTV751EDo5LybFNW/u7+upd/NV\r\ni21+y9/pbNt7VDt/YY4aomZmNs/zfPtFA5ceTgb4xy+9k1zKx/gBv1z3ygnQy5As\r\nLqDCXsGl5QKBgQCBBEC2hdh7AkwLgOE40RGtdOKSYouK78MH+1Cpgs3r8Q1zKAYt\r\ncNrPSb8VXAsruPU4a46WFnUvXVP4/lxc+UxGZ049J1fPdmIHoSAkqoLNlpv4x4wS\r\nb4hHBOiJzoceKjZBa2+W9V3Feass2BgcQTlmrfiylONtOXsFWfdGw6OsSQKBgHVs\r\nn7Ga0Ag8wI1Yih+Rt9OMA6NwNQisezK2SHHpZWXAwfjsHkspw3fdGmIIMa/IN7Fc\r\n+YZZZSDjlDMxkz2/4krLTcQADvRiNa8hhhNldairfgtWVjUn1fwxnlCtN6EH+jFP\r\nwp0ofoUsqEaHEYeneN07tnhryDjrBR38wWSb7QcFAoGALdJGCH5F/8D3+SITIo6U\r\n5ciLM4G9Pcrrw0SNmeXoI1LNDm1V97sN3aBbfqi6C5yWwEyuJTdkN+ToP9IzdUgS\r\n2aueRIvW39CF/rkWh+aAXbUi8X/VsaTiiaFqPLu+q0yHIVnuGasFzeiqUbpjadt/\r\nLszcriFngxhgzdTYO17IYuM=\r\n-----END PRIVATE KEY-----",
+  cert : "-----BEGIN CERTIFICATE-----\r\nMIIDIDCCAomgAwIBAgIENd70zzANBgkqhkiG9w0BAQUFADBOMQswCQYDVQQGEwJV\r\nUzEQMA4GA1UEChMHRXF1aWZheDEtMCsGA1UECxMkRXF1aWZheCBTZWN1cmUgQ2Vy\r\ndGlmaWNhdGUgQXV0aG9yaXR5MB4XDTk4MDgyMjE2NDE1MVoXDTE4MDgyMjE2NDE1\r\nMVowTjELMAkGA1UEBhMCVVMxEDAOBgNVBAoTB0VxdWlmYXgxLTArBgNVBAsTJEVx\r\ndWlmYXggU2VjdXJlIENlcnRpZmljYXRlIEF1dGhvcml0eTCBnzANBgkqhkiG9w0B\r\nAQEFAAOBjQAwgYkCgYEAwV2xWGcIYu6gmi0fCG2RFGiYCh7+2gRvE4RiIcPRfM6f\r\nBeC4AfBONOziipUEZKzxa1NfBbPLZ4C/QgKO/t0BCezhABRP/PvwDN1Dulsr4R+A\r\ncJkVV5MW8Q+XarfCaCMczE1ZMKxRHjuvK9buY0V7xdlfUNLjUA86iOe/FP3gx7kC\r\nAwEAAaOCAQkwggEFMHAGA1UdHwRpMGcwZaBjoGGkXzBdMQswCQYDVQQGEwJVUzEQ\r\nMA4GA1UEChMHRXF1aWZheDEtMCsGA1UECxMkRXF1aWZheCBTZWN1cmUgQ2VydGlm\r\naWNhdGUgQXV0aG9yaXR5MQ0wCwYDVQQDEwRDUkwxMBoGA1UdEAQTMBGBDzIwMTgw\r\nODIyMTY0MTUxWjALBgNVHQ8EBAMCAQYwHwYDVR0jBBgwFoAUSOZo+SvSspXXR9gj\r\nIBBPM5iQn9QwHQYDVR0OBBYEFEjmaPkr0rKV10fYIyAQTzOYkJ/UMAwGA1UdEwQF\r\nMAMBAf8wGgYJKoZIhvZ9B0EABA0wCxsFVjMuMGMDAgbAMA0GCSqGSIb3DQEBBQUA\r\nA4GBAFjOKer89961zgK5F7WF0bnj4JXMJTENAKaSbn+2kmOeUJXRmm/kEd5jhW6Y\r\n7qj/WsjTVbJmcVfewCHrPSqnI0kBBIZCe/zuf6IWUrVnZ9NA2zsmWLIodz2uFHdh\r\n1voqZiegDfqnc1zqcPGUIWVEX/r87yloqaKHee9570+sB3c4\r\n-----END CERTIFICATE-----",
+  //"wxSecurt" : "91b80771360be2c27901e04febeb704e"
+};
+
+//微信小程序支付信息
+config.wxAppletPay ={
+  appid: "wxe8596cda75f9d411",
+  mch_id: "1266074001",
   partner_key : "TRUTYmaker201506TRUTYmaker201506",
   key : "-----BEGIN PRIVATE KEY-----\r\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC4TTKfRUlfsmgW\r\nDx0JwwkzcvU6206cRkzxe26Su0Q+sNvj7UhicR6xNQaZIW8ZHxQivvLrk57irJSv\r\n9PnQTeYJ9RyoCd60nafEFRS/V9p8vA/XZhtisebyTGuWy1jOST1Rdpa/n+MMrSTq\r\nDdHLsW3UzjeQOol9yJsS/gXzUwNhgofRKm9pvOMjQP+JfpXz0KYxCZPvneUJJIou\r\nD4KDZG7NjmL1z+b22IJQUoUtBBbmF7d5AKdcfVrlFmRpAjoNPhT3JihFdIPozTz5\r\n+5y97HrQUy9Tb24PrcLVgp1cWN1SWwI25xU/1QWBq8ZqkxAVPqR7UMQLX9j3kwaV\r\nPWsBvV6NAgMBAAECggEAPt2+XcvRmn4NuTCQlCreMZmOAvSZ3P6x8lFLR2vvfH7x\r\nks72uPWjJYlT5docvnH2eV+vFyJ0uRdrZJXovOBFjrH4g21SdUOt3VnfiOFb2t5/\r\nfNcMkl7iy1W8AWT9tugOrYIJK/ZLCaDqDZiHLrcoIsXw+BavnaNXGmRh/T0c0x6S\r\nCABa1gS1X9ITMgiqPjqGIX/QZ6/NxGJuVw6D2v66Ludg9XA57hJ/6tawLVMyc5RC\r\n1PVv7cSv9HOpiC3EFf7efVdwNWplSDVlj/2RXyu8AdwjC0pyxbyj/HyQpe2NnLat\r\npCTGHb4+E7tLMei3VPv16a5Cp4hgvKY2TU+4nXbBYQKBgQDi2XljRUJmswVnaGG0\r\nnb1Mmvmn1UrzFvzfiUQoxCcyACkg424u/GHVDMHCvjZ2q53LKTyqLLwXq+aTcyDA\r\nBR5ZRUHEPlC4mx9lEvmzTMpIvpAwDAL0BqO+IMIrjU6EAMWqXViqM5zsrQBzMGu5\r\nUjspkbSarwfEzU6j5ZNH3mPLiQKBgQDP/AzbSSm/ezid3Yb25pjfB/i+0Ut/Eq/F\r\nj5CVA7lzYoAFoenlh4H6yYfQze1cW4RxQBuyqzUTV751EDo5LybFNW/u7+upd/NV\r\ni21+y9/pbNt7VDt/YY4aomZmNs/zfPtFA5ceTgb4xy+9k1zKx/gBv1z3ygnQy5As\r\nLqDCXsGl5QKBgQCBBEC2hdh7AkwLgOE40RGtdOKSYouK78MH+1Cpgs3r8Q1zKAYt\r\ncNrPSb8VXAsruPU4a46WFnUvXVP4/lxc+UxGZ049J1fPdmIHoSAkqoLNlpv4x4wS\r\nb4hHBOiJzoceKjZBa2+W9V3Feass2BgcQTlmrfiylONtOXsFWfdGw6OsSQKBgHVs\r\nn7Ga0Ag8wI1Yih+Rt9OMA6NwNQisezK2SHHpZWXAwfjsHkspw3fdGmIIMa/IN7Fc\r\n+YZZZSDjlDMxkz2/4krLTcQADvRiNa8hhhNldairfgtWVjUn1fwxnlCtN6EH+jFP\r\nwp0ofoUsqEaHEYeneN07tnhryDjrBR38wWSb7QcFAoGALdJGCH5F/8D3+SITIo6U\r\n5ciLM4G9Pcrrw0SNmeXoI1LNDm1V97sN3aBbfqi6C5yWwEyuJTdkN+ToP9IzdUgS\r\n2aueRIvW39CF/rkWh+aAXbUi8X/VsaTiiaFqPLu+q0yHIVnuGasFzeiqUbpjadt/\r\nLszcriFngxhgzdTYO17IYuM=\r\n-----END PRIVATE KEY-----",
   cert : "-----BEGIN CERTIFICATE-----\r\nMIIDIDCCAomgAwIBAgIENd70zzANBgkqhkiG9w0BAQUFADBOMQswCQYDVQQGEwJV\r\nUzEQMA4GA1UEChMHRXF1aWZheDEtMCsGA1UECxMkRXF1aWZheCBTZWN1cmUgQ2Vy\r\ndGlmaWNhdGUgQXV0aG9yaXR5MB4XDTk4MDgyMjE2NDE1MVoXDTE4MDgyMjE2NDE1\r\nMVowTjELMAkGA1UEBhMCVVMxEDAOBgNVBAoTB0VxdWlmYXgxLTArBgNVBAsTJEVx\r\ndWlmYXggU2VjdXJlIENlcnRpZmljYXRlIEF1dGhvcml0eTCBnzANBgkqhkiG9w0B\r\nAQEFAAOBjQAwgYkCgYEAwV2xWGcIYu6gmi0fCG2RFGiYCh7+2gRvE4RiIcPRfM6f\r\nBeC4AfBONOziipUEZKzxa1NfBbPLZ4C/QgKO/t0BCezhABRP/PvwDN1Dulsr4R+A\r\ncJkVV5MW8Q+XarfCaCMczE1ZMKxRHjuvK9buY0V7xdlfUNLjUA86iOe/FP3gx7kC\r\nAwEAAaOCAQkwggEFMHAGA1UdHwRpMGcwZaBjoGGkXzBdMQswCQYDVQQGEwJVUzEQ\r\nMA4GA1UEChMHRXF1aWZheDEtMCsGA1UECxMkRXF1aWZheCBTZWN1cmUgQ2VydGlm\r\naWNhdGUgQXV0aG9yaXR5MQ0wCwYDVQQDEwRDUkwxMBoGA1UdEAQTMBGBDzIwMTgw\r\nODIyMTY0MTUxWjALBgNVHQ8EBAMCAQYwHwYDVR0jBBgwFoAUSOZo+SvSspXXR9gj\r\nIBBPM5iQn9QwHQYDVR0OBBYEFEjmaPkr0rKV10fYIyAQTzOYkJ/UMAwGA1UdEwQF\r\nMAMBAf8wGgYJKoZIhvZ9B0EABA0wCxsFVjMuMGMDAgbAMA0GCSqGSIb3DQEBBQUA\r\nA4GBAFjOKer89961zgK5F7WF0bnj4JXMJTENAKaSbn+2kmOeUJXRmm/kEd5jhW6Y\r\n7qj/WsjTVbJmcVfewCHrPSqnI0kBBIZCe/zuf6IWUrVnZ9NA2zsmWLIodz2uFHdh\r\n1voqZiegDfqnc1zqcPGUIWVEX/r87yloqaKHee9570+sB3c4\r\n-----END CERTIFICATE-----",

@@ -77,12 +77,12 @@ function config(req, res) {
 };
 //单图上传 来源于富文本框
 function uploadimage(req, res) {
-    var userpath;
-    if(req.user){
-         userpath=req.user.user.wxu;
-    }else if(req.body.username){
-        userpath=req.body.username;
-    }
+    var userpath = 'mkps';
+    // if(req.user){
+    //      userpath=req.user.user.wxu;
+    // }else if(req.body.username){
+    //     userpath=req.body.username;
+    // }
 
 
         var tmp_path,
@@ -150,7 +150,7 @@ function listimage(req, res) {
             start: req.query.start
         });
     })*/
-    var userpath=req.user.user.wxAppId;
+    var userpath=req.user.user.wxAppId||'mkps';
     var target_path = publicconfig.filepath+'/'+userpath;
 
     fs.readdir(target_path, function (err, files) {

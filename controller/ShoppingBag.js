@@ -94,7 +94,8 @@ exports.setShoppingBag = (req, res) => {
  */
 exports.getShoppingBagInfo = (req, res) => {
     const params = url.parse(req.url, true).query;
-    const query = { shopId: params.shopId };
+    // const query = { shopId: params.shopId };
+    const query = {shopId:'test'};
     dbName.find(query, (reData) => {
         try {
             if (reData.status > 0 && reData.items.length >= 0) {

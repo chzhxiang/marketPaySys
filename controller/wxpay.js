@@ -17,6 +17,9 @@ var config=require('../config/'+prod+'config.js');
 
 var wxpayUtil= WXPay({});
 
+
+const pm = require('./../models/publicModel');
+
 //var wxpay = WXPay({
 //    appid: 'wx031073cd6681cec7',
 //    mch_id: '1266074001',
@@ -111,6 +114,48 @@ exports.wxUnifiedOrder = function(order,openid,req,res)
         })
     });
 }
+
+/*
+ *  小程序微信支付
+ * */
+exports.WxAppletPay = function(order,req,res){
+    if(!order.payNo){
+        order.payNo=new ObjectID().toString();
+    }
+    var tRmb=Number(order.countAll);
+    var ip=req.connection.remoteAddress;
+    if(ip.indexOf('ff')>0){
+        ip=ip.substr(7,ip.length);
+    }
+    var reqHander={
+        body:order.body,
+        attach:'',
+        out_trade_no:order.payNo,
+        total_fee: tRmb*100,
+        spbill_create_ip: ip,
+        trade_type: 'JSAPI',
+        notify_url: config.payCallBackIp+'/wxpay/AppOrderPayUrl',
+        openid: order.openid||'oy7oQ0d9GXGx9Qs1bMRKtW3ZhkT0'
+    };
+    // console.log(reqHander);
+    const wxpay = WXPay(config.wxAppletPay);
+    wxpay.getBrandWCPayRequestParams(reqHander,function(err,result){
+        // console.log('---------- 微信支付 返回的信息 start ----------');
+        // console.log(err);
+        // console.log('---------- 上面是 err 信息 ----------');
+        // console.log(result);
+        // console.log('---------- 上面是 result 信息 ----------');
+        if(err){
+            return res.json({code: 400, msg: '统一下单失败'});
+        }
+        //生成订单信息
+        //var reOrder=o.saveAll({body:order});//一个商品一个订单
+        //var reOrder=o.saveOrder(order);//多商品单订单
+        //var reOrder=o.splitOrder(order);//拆分订单
+        // console.log(result)
+        return res.json({code: 200, msg: '统一下单成功',data:result});
+    })
+};
 
 
 exports.goodsOrder = function(req,res) {
@@ -248,7 +293,7 @@ exports.appOrders = function(order,req,res) {
         notify_url:  config.payCallBackIp+'/wxpay/AppOrderPayUrl'
         //openid: order.openid//'ouZTDtyQCas0X-NwMwGx29DosChs' //app不用 openid
     };
-    console.log(reqHander);
+    // console.log(reqHander);
 
     const wxpay = WXPay(config.wxApppay);
 
@@ -640,36 +685,53 @@ exports.GrantUrl=wxpayUtil.useWXCallback(function(msg, req, res, next){
 
 });
 
-
 exports.OrderPayNotifyUrl=wxpayUtil.useWXCallback(function(msg, req, res, next){
     console.log('-------  wx 支付 回调 ----------');
     console.log(req.wxmessage);
     if("SUCCESS"===req.wxmessage.return_code){
         if("SUCCESS"===req.wxmessage.result_code){
 
-            var wxmessage=req.wxmessage;
+            const wxmessage=req.wxmessage;
 
-            var payMsg = {payType: 'appWxPay', payInfo: {}};//支付处理数据
+            const payMsg = {payType: 'appWxPay', payInfo: {}};//支付处理数据
             payMsg.payInfo = wxmessage;
 
-            if(payMsg.payInfo.out_trade_no.indexOf('AG_')>-1){//供应商
-                profitRoute.checkAgentUpd(payMsg,payMsg.payInfo.out_trade_no);
-            }else{//订单
-                //微信接口的回调处理
-                o.checkGOrderByPayNo(payMsg.payInfo.out_trade_no,payMsg.payType,payMsg.payInfo,function(re,order){////核查微信回调
-                    console.log(order);
-                    if(re.code==200){
-                        o.updateOrderAllPay(payMsg.payInfo.out_trade_no,payMsg.payInfo,order);//拆分订单
-                        g.updateStockByPayNo(payMsg.payInfo.out_trade_no,order,function(re){//减库存
-                            console.log("END="+re);
-                            //res.success();
-                        });
-                    }else{
-                        console.log(re);
-                        console.log(payMsg);
-                    }
-                });
-            }
+            //修改店铺收益
+            const mkOrder = new pm('mkOrder');
+            const mkProfit = new pm('mkProfits');
+            const query = {payNo:payMsg.payInfo.out_trade_no};
+            mkOrder.find(query,oData=>{
+                if(oData.status>0&&oData.items.length>0){
+                    const pquery = {shopId:oData.items[0].shopId};
+                    const rquery = {}
+                    mkProfit.find(pquery,pData=>{
+                        if(pData.status>0&&pData.items.length>0){
+                            mkProfit.update(pquery,{"$inc":{countAll:oData.items[0].countAll}},data=>{});
+                        }else if(pData.status>0&&pData.items.length===0){
+                            mkProfit.save({shopId:oData.items[0].shopId,countAll:oData.items[0].countAll},data=>{});
+                        }
+                    })
+                }
+            })
+
+            // if(payMsg.payInfo.out_trade_no.indexOf('AG_')>-1){//供应商
+            //     profitRoute.checkAgentUpd(payMsg,payMsg.payInfo.out_trade_no);
+            // }else{//订单
+            //     //微信接口的回调处理
+            //     o.checkGOrderByPayNo(payMsg.payInfo.out_trade_no,payMsg.payType,payMsg.payInfo,function(re,order){////核查微信回调
+            //         console.log(order);
+            //         if(re.code==200){
+            //             o.updateOrderAllPay(payMsg.payInfo.out_trade_no,payMsg.payInfo,order);//拆分订单
+            //             g.updateStockByPayNo(payMsg.payInfo.out_trade_no,order,function(re){//减库存
+            //                 console.log("END="+re);
+            //                 //res.success();
+            //             });
+            //         }else{
+            //             console.log(re);
+            //             console.log(payMsg);
+            //         }
+            //     });
+            // }
 
             //o.checkOrderByPayNo(req.wxmessage.out_trade_no,req.wxmessage,function(re){////核查支付宝支付回调
             //    if(re.code==200){

@@ -22,7 +22,7 @@ exports.createQRcode = function createQRcode(wxu,urlStr,cb){
             cb(imageUrl);
         })
     });
-};
+}
 
 exports.getDate=function(){
     return moment.utc().zone(-8);

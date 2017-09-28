@@ -45,6 +45,7 @@ exports.getOrdersByPages = (req, res) => {
 
         mkOrder.pagesSel(query, page_size, page, sort, (data) => {
             try {
+            
                 return res.send(data);
 
             } catch (error) {
@@ -133,7 +134,7 @@ exports.createOrder = (req, res) => {
  */
 
 exports.orderPay = (req, res) => {
-    console.log(req.body);
+    // console.log(req.body);
     const query = { oid: req.body.oid };
     const payNo = new ObjectID().toString();
     const setModel = { "$set": { payType: req.body.payType, payNo: payNo} };
@@ -154,7 +155,7 @@ exports.orderPay = (req, res) => {
                 }else if(req.body.payType==1){
                     alipay.appOrders(req.body,req,res);
                 }else{
-                    res.send({code:400,msg:'暂时不支持改支付类型'});
+                    res.send({code:400,msg:'暂时不支持该支付类型'});
                 }
 
 
@@ -170,8 +171,44 @@ exports.orderPay = (req, res) => {
     })
 }
 
+//小程序微信支付
+exports.wxAppletPay = (req,res) => {
+    // console.log(req.body);
+    const query = { oid: req.body.oid };
+    const payNo = new ObjectID().toString();
+    const setModel = { "$set": { payType: req.body.payType, payNo: payNo} };
+    mkOrder.find(query,data => {
+        try {
+            if (data.status>0&&data.items.length>0) {
+                req.body.countAll = 0;
+                data.items[0].goodsInfo.forEach(e=>{
+                    req.body.countAll += Number(e.price)*Number(e.count);
+                });
+                req.body.body = `购买${data.items[0].goodsInfo[0].goodsName}等商品`;
+                req.body.payNo = payNo;
+
+                mkOrder.update(query, setModel, (data) => {})
+                wxpay.WxAppletPay(req.body,req,res);
+
+            } else if (data.status>0&&data.items.length===0) {
+                return res.json({ code: 400, msg: '订单不存在' });
+            } else {
+                 return res.json({ code: 400, msg: '网络错误' });
+            }
+        } catch (error) {
+            console.log(error);
+            return res.json({ code: 400, msg: '网络错误' });
+        }
+    })
+}
+
+
 
 const saveMKorders = (orderInfo, res) => {
+    orderInfo.countAll = 0
+    orderInfo.goodsInfo.forEach(e=>{
+        orderInfo.countAll += Number(e.price)*Number(e.count);
+    });
     mkOrder.save(orderInfo, (reData) => {
         try {
             return res.json({ code: 200, msg: "下单成功", data: { oid: orderInfo.oid } });
@@ -218,19 +255,20 @@ const checkStocks = () => {
 
 
 /**
- * 订单二维码(废除)（客户端生成）
+ * 订单二维码(小程序)（app客户端生成）
  * @param = {
  *    oid:'',
  *    shopId:'',
  * }
  */
 exports.createOrderQRcode = (req, res) => {
-    const url = `${config.QRcodeUrl}?payNo=${req.body.oid}&shopId=${req.body.shopId}`;
+    const url = `${req.body.shopId}_${req.body.oid}`;
     const fileBuffer = qr.imageSync(url, { type: 'png', size: 5 });
     file.uploadQRcode(req.body.shopId, fileBuffer, function (imageUrl) {
-        return res.json({ code: 200, data: imageUrl || '' });
+        return res.json({ code: 200, data: {"qrcodeUrl":imageUrl || '' }});
     })
 }
+
 
 /**
  * 取消/删除订单
@@ -258,7 +296,7 @@ exports.delOrder = (req, res) => {
  * */
 exports.paySuccess = (req, res) => {
     const query = { oid: req.body.oid };
-    const setModel = { "$set": { orderStatus: 1 } };
+    let setModel = { "$set": { orderStatus: 1 } };
     mkOrder.update(query, setModel, (data) => {
         //console.log(data);
         try {
@@ -269,4 +307,36 @@ exports.paySuccess = (req, res) => {
             return res.json({ code: 400, msg: '网络错误' });
         }
     })
+    // mkOrder.find(query,(result)=>{
+
+    //     if (result.status > 0 && result.items.length > 0) {
+    //         const url = `${result.items[0].shopId}_${req.body.oid}`;
+    //         const fileBuffer = qr.imageSync(url, { type: 'png', size: 5 });
+    //         file.uploadQRcode(req.body.shopId, fileBuffer, function (imageUrl) {
+    //             setModel = { "$set": { orderStatus: 1,qrcodeUrl:imageUrl||'' } };
+    //             mkOrder.update(query, setModel, (data) => {
+    //                 //console.log(data);
+    //                 try {
+    //                     //删除购物车
+    //                     delGoodsCar(query);
+    //                     return res.json({ code: 200, msg: '支付成功' });
+    //                 } catch (error) {
+    //                     return res.json({ code: 400, msg: '网络错误' });
+    //                 }
+    //             })
+    //         })
+    //     }else{
+    //         mkOrder.update(query, setModel, (data) => {
+    //             //console.log(data);
+    //             try {
+    //                 //删除购物车
+    //                 delGoodsCar(query);
+    //                 return res.json({ code: 200, msg: '支付成功' });
+    //             } catch (error) {
+    //                 return res.json({ code: 400, msg: '网络错误' });
+    //             }
+    //         })
+    //     }
+    // })
+    
 }

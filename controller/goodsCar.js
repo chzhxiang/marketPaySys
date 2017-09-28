@@ -30,9 +30,9 @@ exports.addGoodsCar = (req, res) => {
     //         }
     //     })
     // });
-    let query = { "goodsInfo.gid": req.body.goodsInfo.gid, userId: req.user.user._id };
+    let query = { "goodsInfo.gid": req.body.goodsInfo.gid, userId: req.user.user._id,shopId:req.body.shopId};
     if (req.body.goodsInfo.barCode) {
-        query = { "goodsInfo.barCode": req.body.goodsInfo.barCode, userId: req.user.user._id };
+        query = { "goodsInfo.barCode": req.body.goodsInfo.barCode, userId: req.user.user._id,shopId:req.body.shopId};
     }
     goodCar.find(query, (reD) => {
 
@@ -97,7 +97,7 @@ exports.getGoodsCarInfo = (req, res) => {
     //         }
     //     })
     // });
-    const query = { userId: req.user.user._id };
+    const query = { userId: req.user.user._id,shopId:params.shopId };
     const sort = { sort: [['times', -1]] }
     goodCar.findBySort(query, sort, (reData) => {
         try {
@@ -158,7 +158,7 @@ exports.delGoodsCarInfo = (req, res) => {
  * 
  */
 exports.delAll = (req,res) => {
-    const query = { userId:req.user.user_id};
+    const query = { userId:req.user.user_id,shopId:req.body.shopId};
     goodCar.delete(query, (reData) => {
         try {
             return res.json({ code: 200, msg: '删除成功' });
