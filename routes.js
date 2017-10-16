@@ -54,6 +54,14 @@ exports.config = function (app) {
     app.post('/mkps/markets/delMaketInfo', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.markets.delMaketInfo);
     app.get('/mkps/markets/getMaketInfo', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.markets.getMaketInfo);
 
+    routes.memberSys = require('./controller/memberSys.js');
+    app.post('/mkps/memberSys/createCoupon', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.memberSys.createCoupon);
+    app.post('/mkps/memberSys/getCoupon', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.memberSys.getCoupon);
+    app.get('/mkps/memberSys/getMyCoupon', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.memberSys.getMyCoupon);
+    app.get('/mkps/memberSys/getCouponByShopId', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.memberSys.getCouponByShopId);
+    app.get('/mkps/memberSys/getCouponListByShopId', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.memberSys.getCouponListByShopId);
+    app.get('/mkps/memberSys/getCouponInfoById', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.memberSys.getCouponInfoById)
+
     // routes.menu = require('./controller/menu.js');
     // app.get('/mkps/menu', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.menu.menu);
 
