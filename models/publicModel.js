@@ -151,6 +151,11 @@ class pm {
             callback(data);
         });
     };
+    findOne(query,sort,callback){
+        this.crud.readOne(query,sort,(data)=>{
+            callback(data);
+        });
+    };
     update(query, updateModel, callback) {
         this.crud.update(query, updateModel, (data)=> {
             callback(data);

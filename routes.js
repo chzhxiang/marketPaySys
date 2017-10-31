@@ -60,7 +60,24 @@ exports.config = function (app) {
     app.get('/mkps/memberSys/getMyCoupon', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.memberSys.getMyCoupon);
     app.get('/mkps/memberSys/getCouponByShopId', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.memberSys.getCouponByShopId);
     app.get('/mkps/memberSys/getCouponListByShopId', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.memberSys.getCouponListByShopId);
-    app.get('/mkps/memberSys/getCouponInfoById', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.memberSys.getCouponInfoById)
+    app.get('/mkps/memberSys/getCouponInfoById', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.memberSys.getCouponInfoById);
+
+    routes.mywallet = require('./controller/myWallet.js');
+    app.get('/mkps/mywallet/getMyMoney', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.mywallet.getMyMoney);
+    app.get('/mkps/mywallet/getMyIntegrals', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.mywallet.getMyIntegrals);
+    app.get('/mkps/mywallet/myWallet', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.mywallet.myWallet);
+
+
+    routes.integrals = require('./controller/integrals.js');
+    app.get('/mkps/integrals/getIntegralList', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.integrals.getIntegralList);
+
+    routes.consumption = require('./controller/consumption.js');
+    app.get('/mkps/consumption/getConsumptionList', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.consumption.getConsumptionList);
+
+
+    routes.recharge = require('./controller/recharge.js');
+    app.get('/mkps/recharge/getRechargeList', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.recharge.getRechargeList);
+    app.post('/mkps/recharge/reCharge', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.recharge.reCharge);    
 
     // routes.menu = require('./controller/menu.js');
     // app.get('/mkps/menu', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.menu.menu);
@@ -69,12 +86,15 @@ exports.config = function (app) {
     // routes.dashboard = require('./controller/dashboard.js');
     // app.get('mkps/dashboard',jwt({secret: screen.secretToken}), tokenManager.verifyToken, routes.dashboard.dashboard);
 
-    //routes.alipay = require('./alipay/index.js');
+    routes.alipay = require('./alipay/index.js');
     //
     //app.post('/mkps/alipay/paynotify', routes.alipay.alipayNotify);//支付宝支付回调
+
+    app.post('/mkps/alipay/reChargeCb', routes.alipay.reChargeCb);//充值支付宝支付回调
     //
-    //routes.wxpay = require('./controller/wxpay.js');
+    routes.wxpay = require('./controller/wxpay.js');
     //app.post('/mkps/wxpay/AppOrderPayUrl', routes.wxpay.AppOrderPayUrl);//微信支付回调
+    app.post('/mkps/wxpay/AppRechargecb', routes.wxpay.AppRechargecb);//充值微信支付回调
 
 
 };

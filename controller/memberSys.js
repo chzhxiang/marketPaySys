@@ -8,8 +8,8 @@ const ObjectID = require('mongodb').ObjectID;
  *  startTime:'',
  *  endTime:'',
  *  moneny:'',
- *  shopIdArr:[],//适用店铺
- *  goodsIdArr:[],//不参入商品
+ *  shopIdArr:[{_id:'',name:''}],//适用店铺
+ *  goodsIdArr:[],//不参加商品
  *  fullMoneny:'',
  *  count:'',
  *  couponId:'',
@@ -18,6 +18,8 @@ const ObjectID = require('mongodb').ObjectID;
  *  couponType:1,//===1 门店  ===2 商品,
  *  rule:''//使用规则
  *  couponName:'',
+ *  goodsImg:'',
+ *  goodsName:'',
  * }
  */
 
@@ -54,17 +56,25 @@ exports.createCoupon = (req,res) => {
  exports.getCoupon = (req,res)=>{
      const myCoupon = new pm('myCoupon');
      req.body.userId = req.user.user._id;
-     myCoupon.save(req.body,(data)=>{
-         if(data.status>0&&data.items.length>0){
-             const query = {_id:ObjectID(req.body.couponId)};
-             const setModel = {overplus:{"$inc":-1}};
-             //优惠券总数减一
-             coupon.update(query,setModel,(data)=>{});
-             return res.json({code:200,msg:'领取成功'});
-         }else{
-            return res.json({code:200,msg:'领取失败'});
-         }
+     coupon.find({shopId:req.body.shopId,couponId:req.body.couponId},(result)=>{
+        if(reslult.status>0&&result.items.length>0){
+            req.body.shopIdArr = result.items[0].shopIdArr;
+            myCoupon.save(req.body,(data)=>{
+                if(data.status>0&&data.items.length>0){
+                    const query = {_id:ObjectID(req.body.couponId)};
+                    const setModel = {overplus:{"$inc":-1}};
+                    //优惠券总数减一
+                    coupon.update(query,setModel,(data)=>{});
+                    return res.json({code:200,msg:'领取成功'});
+                }else{
+                   return res.json({code:400,msg:'领取失败'});
+                }
+            })
+        }else{
+            return res.json({code:400,msg:'领取失败'});  
+        }
      })
+    
  }
 
 

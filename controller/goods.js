@@ -64,25 +64,25 @@ const addGoods = (goodsInfo) => {
         }
     })
 }
-// (function(){
-//     const goodsArr = [{
-//         goodsName:'心相印茶语纸面巾',
-//         specs:'',
-//         price:6.80,   
-//         barCode:'6922868285747',
-//         stocks:100
-//     },
-//     {
-//         goodsName:'伊利优酸乳蓝莓味',
-//         specs:'250ml',
-//         price:2.50,   
-//         barCode:'6907992502588',
-//         stocks:100
-//     }]
-//     goodsArr.forEach(e=>{
-//         addGoods(e)
-//     })
-// })()
+//(function(){
+//    const goodsArr = [{
+//        goodsName:'心相印茶语纸面巾',
+//        specs:'',
+//        price:6.80,
+//        barCode:'6922868285747',
+//        stocks:100
+//    },
+//    {
+//        goodsName:'伊利优酸乳蓝莓味',
+//        specs:'250ml',
+//        price:2.50,
+//        barCode:'6907992502588',
+//        stocks:100
+//    }]
+//    goodsArr.forEach(e=>{
+//        addGoods(e)
+//    })
+//})()
 
 
 

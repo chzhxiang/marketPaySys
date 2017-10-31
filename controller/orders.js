@@ -116,8 +116,66 @@ exports.createOrder = (req, res) => {
     // req.body.payNo = new ObjectID().toSring();
     req.body.oid = new ObjectID().toString();
     req.body.shopName = 'test'; //店铺名称
-    saveMKorders(req.body, res);
+    req.body.isCoupon = 0;
+    //遍历统计总价格
+    req.body.goodsInfo.forEach(e=>{
+        req.body.countAll += Number(e.price)*Number(e.count);
+    });
+    req.body.payMoney = req.body.countAll;
+    //查询优惠券
+    const myCoupon = new pm('myCoupon');
+    const query = {userId:req.user.user._id,"shopIdArr._id":req.body.shopId};
+    myCoupon.find(query,(data)=>{
+        if(data.status>0&&data.items.length>0){
+            let cIdArr = [];
+            data.items.forEach(e=>{
+                cIdArr.push(e.couponId);
+            }); 
+            const sort = {sort:[['moneny',-1]]}
+            coupon.findOne({couponId:{"$in":cIdArr},fullMoneny:{"$lte":req.body.countAll}},sort,(reData)=>{
+                if(reData.status>0&&reData.items.couponId){
+                   req.body.payMoney = req.body.countAll - Number(reData.items.money);//需要支付的金额
+                   req.body.couponId = reData.items.couponId;
+                   req.body.isCoupon = 1;
+                }
+                saveMKorders(req.body, res);
+            })
+        }else{
+            saveMKorders(req.body, res);
+        }
+    })
+    
 };
+
+/**
+ * 修改订单的优惠券
+ * @params = {
+ *   oid:'订单编号',
+ *   couponId:'优惠券id'
+ * }
+ */
+exports.setOrderCoupon = (req,res) =>{
+    const coupon = new pm('coupon');
+    const cquery = {couponId:req.body.couponId};
+    const oquery = {oid:req.body.oid};
+    coupon.findOne(cquery,null,(result)=>{
+        if(result.status>0&&result.items.couponId){
+            mkOrder.findOne(oquery,null,(reData)=>{
+                if(reData.status>0&&reData.itmes&&reData.items.oid){
+                    reData.items.payMoney = reData.items.countAll - Number(result.items.money);//需要支付的金额
+                    const setModel = {"$set":{payMoney: reData.items.payMoney,couponId:req.body.couponId}};
+                    mkOrder.update(oquery,setModel,(re)=>{});
+                    return res.json({code:200,msg:'操作成功',data:reData.items});
+                }else{
+                    return res.json({code:400,msg:'网络错误',data:{}});
+                }
+            })
+        }else{
+            return res.json({code:400,msg:'网络错误',data:{}});
+        }
+      
+    })
+}
 
 /**
  * 支付
@@ -141,10 +199,11 @@ exports.orderPay = (req, res) => {
     mkOrder.find(query,data => {
         try {
             if (data.status>0&&data.items.length>0) {
-                req.body.countAll = 0;
-                data.items[0].goodsInfo.forEach(e=>{
-                    req.body.countAll += Number(e.price)*Number(e.count);
-                });
+                // req.body.countAll = 0;
+                // data.items[0].goodsInfo.forEach(e=>{
+                //     req.body.countAll += Number(e.price)*Number(e.count);
+                // });
+                req.body.countAll = data.items[0].payMoney;
                 req.body.body = `购买${data.items[0].goodsInfo[0].goodsName}等商品`;
                 req.body.payNo = payNo;
 
@@ -242,6 +301,37 @@ const delGoodsCar = (query) => {
     })
 }
 
+
+const consumption = (query) => {
+    mkOrder.findOne(query,null, data => {
+        try {
+            if (data.status > 0 && data.itmes&&data.items.oid) {
+               const consumption = new pm('consumption');
+               const money = Number(data.items.payMoney);
+               const body = {userId:data.items.userId,cMoney:money};
+               //消费记录
+               consumption.save(body,re=>{});
+               //更新账号余额、积分
+               const mywallet = new pm('myWallet');
+               mywallet.update({userId:data.items.userId},{"$inc":{money:-money,integrals:money}},re=>{});
+               //积分记录
+               const integrals = pm('integrals');
+               const obj = {userId:data.items.userId,integrals:money};
+               integrals.save(obj,re=>{});
+
+               //删除已使用的优惠券
+               if(data.items.couponId){
+                   const myCoupon = new pm('myCoupon');
+                   const query = {couponId:data.items.couponId,userId:data.items.userId};
+                   myCoupon.delete(query,re=>{});
+               }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    })
+}
+
 /**
  * 校验库存
  * @param = {
@@ -302,6 +392,8 @@ exports.paySuccess = (req, res) => {
         try {
             //删除购物车
             delGoodsCar(query);
+            //生成消费记录
+            consumption(query);
             return res.json({ code: 200, msg: '支付成功' });
         } catch (error) {
             return res.json({ code: 400, msg: '网络错误' });
@@ -340,3 +432,5 @@ exports.paySuccess = (req, res) => {
     // })
     
 }
+
+

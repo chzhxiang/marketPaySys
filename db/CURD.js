@@ -172,27 +172,50 @@ CRUD.prototype = {
 
     readOne: function (query, sort, callback) {
 
-        db[this.collection].findOne(query, sort, function (err, items) {
+        if (sort) {
 
-            if (err) {
+            db[this.collection].findOne(query, sort, function (err, items) {
 
-                return callback(status.fail);
+                if (err) {
 
-            }
+                    return callback(status.fail);
 
-            var obj = {
+                }
 
-                status: status.success.status,
+                var obj = {
 
-                message: status.success.message,
+                    status: status.success.status,
 
-                items: items
+                    message: status.success.message,
 
-            };
-            return callback(obj);
+                    items: items
 
-        });
+                };
+                return callback(obj);
 
+            });
+        }else{
+            db[this.collection].findOne(query, function (err, items) {
+                
+                if (err) {
+                
+                     return callback(status.fail);
+                
+                }
+                
+                var obj = {
+                
+                    status: status.success.status,
+                
+                    message: status.success.message,
+                
+                    items: items
+                
+                };
+                return callback(obj);
+                
+            });
+        }
 
 
     },

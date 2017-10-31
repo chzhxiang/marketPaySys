@@ -329,6 +329,97 @@ exports.appOrders = function(order,req,res) {
     })
 };
 
+
+/**
+ * app 会员充值
+ * {body:"订单描述"，orderId:"订单id",totalFee:'金额'}
+ **/
+exports.appRecharge = function(order,req,res) {
+
+    var tRmb=Number(order.money);
+    var ip=req.connection.remoteAddress;
+    if(ip.indexOf('ff')>0){
+        ip=ip.substr(7,ip.length);
+    }
+    var reqHander={
+        body:order.body,
+        out_trade_no:order.payNo,
+        //nonce_str: order.payNo,
+        total_fee: tRmb*100,
+        spbill_create_ip: ip,
+        trade_type: 'APP',
+        notify_url:  config.payCallBackIp+'/mkps/wxpay/AppRechargecb'
+        //openid: order.openid//'ouZTDtyQCas0X-NwMwGx29DosChs' //app不用 openid
+    };
+    // console.log(reqHander);
+
+    const wxpay = WXPay(config.wxApppay);
+    const recharge = new pm('reCharge')
+    wxpay.getAppBrandWCPayRequestParams(reqHander,function(err,result,data){
+        // console.log('---------- 向微信下单返回的信息 start ----------');
+
+        // console.log(err);
+        // console.log('---------- 上面是 err 信息 ----------');
+        // console.log(result);
+        // console.log('---------- 上面是 result 信息 ----------');
+        // //console.log(data);
+        if(err){
+            return res.json({code: 400, msg: '统一下单失败'});
+        }
+        //生成订单信息
+        order.orderStatus = 0;
+        order.name = '微信充值';
+        recharge.save(order,function(result){});
+        var re={
+            payType:"appWxPay",
+            amount:tRmb,
+            appid:result.appid,
+            trade_no:order.payNo,
+            partner_id:result.partnerid,
+            prepay_id:result.prepayid,
+            noncestr:result.noncestr,
+            timestamp:result.timestamp,
+            package:result.package,
+            sign:result.sign,
+            call_back_url:"",
+            product_name:""
+        };
+        return res.json({code: 200, msg: '统一下单成功',data:re});
+    })
+};
+
+exports.AppRechargecb=wxpayUtil.useWXCallback(function(msg, req, res, next){
+    console.log('-------  wx 支付 回调 ----------');
+    console.log(req.wxmessage);
+    if("SUCCESS"===req.wxmessage.return_code){
+        if("SUCCESS"===req.wxmessage.result_code){
+            const recharge = new pm('reCharge');
+            const mywallet = new pm('myWallet');
+            const query = {payNo:req.wxmessage.out_trade_no};
+            const setModel = {"$set":{orderStatus:1,payInfo:req.wxmessage}};
+            recharge.update(query,setModel,function(result){});
+            recharge.findOne(query,result=>{
+                if(result.status>0&&result.items.payNo){
+                    mywall.findOne({userId:result.items.userId},re=>{
+                        if(re.status>0){
+                            if(re.items.userId){
+                                mywallet.update({userId:result.items.userId},{"$inc":{money:Number(re.items.money)}},reD=>{})
+                            }else{
+                                const body = {userId:result.items.userId,money:Number(re.items.money),integrals:0};
+                                mywallet.save(body,reDate=>{})
+                            }
+                        }
+                    })
+                }
+            })
+            res.success();
+        }
+    }else{
+        res.fail();
+    }
+});
+
+
 //二维码支付下单
 exports.appOrdersByNative = function(order,req,res) {
     if(!order.payNo){
