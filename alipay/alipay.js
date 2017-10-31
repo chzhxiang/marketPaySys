@@ -1,3 +1,4 @@
+var pm = require('./../models/publicModel.js')
 var AlipayNotify = require('./alipay_notify.class').AlipayNotify;
 var AlipaySubmit = require('./alipay_submit.class').AlipaySubmit;
 var  assert = require('assert');
@@ -256,6 +257,102 @@ Alipay.prototype.appOrders = function(order,req,res){
 	// console.log(re);
 	return res.json({code: 200, msg: '统一下单成功',data:re});
 };
+
+
+/**
+ * 充值
+ * @param order
+ * @param req
+ * @param res
+ * @returns {*}
+ */
+Alipay.prototype.appRecharge = function(order,req,res){
+	var fee=Number(order.money);
+	var recharge = new pm('reCharge');
+	order.orderStatus = 0;
+	order.name = '支付宝充值';
+	recharge.save(order,function(result){})
+	var re={
+		payType:"appAliPay",
+		trade_no:order.payNo,
+		call_back_url:config.payCallBackIp+"/mkps/alipay/reChargeCb",
+		product_name:order.body,
+		amount:fee,
+		partner_id:"",
+		prepay_id:"",
+		noncestr:"",
+		timestamp:"",
+		package:"",
+		sign:""
+	};
+	console.log("下发app 支付宝支付信息:");
+	return res.json({code: 200, msg: '统一下单成功',data:re});
+};
+
+Alipay.prototype.reChargeCb = function(req, res){
+	var self = this;
+
+	var _POST = req.body;
+	console.log('接收到支付回调 alipayNotify');
+	console.log(JSON.stringify(_POST));
+
+	//计算得出通知验证结果
+	var alipayNotify = new AlipayNotify(default_alipay_config);
+	//验证消息是否是支付宝发出的合法消息
+	alipayNotify.verifyNotify(_POST, function(verify_result){
+		console.log(verify_result);
+		if(verify_result) {//验证成功
+			//商户订单号
+			var out_trade_no = _POST['out_trade_no'];
+			//支付宝交易号
+			var trade_no = _POST['trade_no'];
+			//交易状态
+			var trade_status = _POST['trade_status'];
+			//退款状态
+			var refund_status = _POST['refund_status'];
+
+			if(trade_status  == 'TRADE_FINISHED'){
+
+			}else if(trade_status == 'TRADE_SUCCESS'){
+				var wxmessage=_POST;
+				var recharge = new pm('reCharge');
+				var mywallet = new pm('myWallet');
+				var query = {payNo:wxmessage.out_trade_no};
+				var setModel = {"$set":{orderStatus:1,payInfo:wxmessage}};
+				recharge.update(query,setModel,function(result){});
+				recharge.findOne(query,result=>{
+					if(result.status>0&&result.items.payNo){
+						mywall.findOne({userId:result.items.userId},re=>{
+							if(re.status>0){
+								if(re.items.userId){
+									mywallet.update({userId:result.items.userId},{"$inc":{money:Number(re.items.money)}},reD=>{})
+								}else{
+									const body = {userId:result.items.userId,money:Number(re.items.money),integrals:0};
+									mywallet.save(body,reDate=>{})
+								}
+							}
+						})
+					}
+				})
+			}
+			// if(refund_status=='REFUND_SUCCESS'){//退款成功
+			// 	var refundMsg=_POST;
+			// 	o.aliRefundUpdOrder(refundMsg);
+			// }
+
+
+			console.log("success");
+			res.send("success");		//请不要修改或删除
+		}
+		else {
+			console.log("fail");
+			//验证失败
+			self.emit("verify_fail");
+			res.send("fail");
+		}
+	});
+};
+
 
 //订单列表支付宝支付接口
 Alipay.prototype.appOrderPay = function(order,req,res){

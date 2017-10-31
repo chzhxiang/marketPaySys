@@ -4,11 +4,18 @@ var alipayservice=new alipay({});
 exports.alipayNotify=function(req,res){
     alipayservice.alipayNotify(req,res);
 };
+
+exports.reChargeCb=function(req,res){
+    alipayservice.reChargeCb(req,res);
+};
 exports.grantnotify=function(req,res){
     alipayservice.grantnotify(req,res);
 };
 exports.appOrders=function(order,req,res){
     alipayservice.appOrders(order,req,res);
+};
+exports.appRecharge=function(order,req,res){
+    alipayservice.appRecharge(order,req,res);
 };
 exports.appGift=function(gift,req,res){//充值
     alipayservice.appGift(gift,req,res);
