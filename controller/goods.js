@@ -8,14 +8,14 @@ const sqlconfig = require('./../config/sqlconfig');
 const url = require('url');
 const goods = new pm('mkGoods');
 const ObjectID = require('mongodb').ObjectID;
-
+const moment = require('moment');
 /**
  * @param = {
  *  shopId:'店铺id',
  *  barCode:'条形码号'
  * }
  */
-exports.getGoodsInfoByBarCode = function(req,res) {
+exports.getGoodsInfoByBarCode = (req,res) =>{
     const params = url.parse(req.url,true).query;
     if(params.barCode){
         // const sqlstr = "select * from dbo.ptype where ptypeid in (select PTypeId from dbo.xw_PtypeBarCode where BarCode="+params.barCode+")";//select * from dbo.xw_PtypeBarCode where BarCode=6901285991219
@@ -84,7 +84,60 @@ const addGoods = (goodsInfo) => {
 //    })
 //})()
 
+/**
+ * 设置积分商品
+ * @params = {
+ *      gid:'商品id',
+ *      integrals:1500,//积分
+ *      validTime:'2017-11-01',//有效时间
+ * }
+ */
 
+exports.setIntegralGood = (req,res) => {
+    const query = {gid:req.body.gid};
+    let validTimes = new Date(req.body.validTime).getTime();
+    validTimes = Number(moment(validTimes).add(23, 'hours').add(59, 'minutes').add(59, 'seconds').zone(-8).format('x'));
+    const setModel = {"set":{integralInfo:{validTime:req.body.validTime,validTimes:validTimes,integrals:req.body.integrals}}};
+    goods.update(query,setModel,(result)=>{
+        return res.json({code:200,msg:'设置成功'});
+    })
+}
+
+
+/**
+ * 获取积分商品
+ * @params = {
+ *      page_size:10,
+ *      page:1;
+ * }
+ */
+
+exports.getIntegralGoodByPage = (req,res) => {
+    const times = new Date().getTime();
+    const query = { "integralInfo.validTimes":{"$gte":times} };
+    const sort = ['integralInfo.validTimes', -1];
+    const page_size = Number(req.params.page_size);
+    const page = Number(req.params.page);
+    goods.pagesSel(query, page_size, page, sort, (data) => {
+        try {
+            if(data.code === 200){
+                var reData = [];
+                data.data.forEach(function(e) {
+                    reData.push({
+                        gid:e.gid,
+                        goodsName:e.goodsName,
+                        imgUrls:e.imgUrls||'',
+                        integralInfo:e.integralInfo||{}
+                    })
+                });
+                data.data = reData;
+            }
+            return res.send(data);
+        } catch (error) {
+            console.log(error);
+        }
+    })
+}
 
 
 

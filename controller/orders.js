@@ -308,7 +308,7 @@ const consumption = (query) => {
             if (data.status > 0 && data.itmes&&data.items.oid) {
                const consumption = new pm('consumption');
                const money = Number(data.items.payMoney);
-               const body = {userId:data.items.userId,cMoney:money};
+               const body = {userId:data.items.userId,cMoney:money,name:`购买${data.items.goodsInfo[0].goodsName}等商品`};
                //消费记录
                consumption.save(body,re=>{});
                //更新账号余额、积分
@@ -316,7 +316,7 @@ const consumption = (query) => {
                mywallet.update({userId:data.items.userId},{"$inc":{money:-money,integrals:money}},re=>{});
                //积分记录
                const integrals = pm('integrals');
-               const obj = {userId:data.items.userId,integrals:money};
+               const obj = {userId:data.items.userId,integrals:money,name:'成功支付订单'};
                integrals.save(obj,re=>{});
 
                //删除已使用的优惠券

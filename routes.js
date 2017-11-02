@@ -40,6 +40,7 @@ exports.config = function (app) {
 
     routes.goods = require('./controller/goods.js');
     app.get('/mkps/goods/getGoodsInfoByBarCode', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.goods.getGoodsInfoByBarCode);
+    app.get('/mkps/goods/getIntegralGoodByPage', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.goods.getIntegralGoodByPage);
 
     routes.goodsCar = require('./controller/goodsCar.js');
     app.get('/mkps/goodsCar/getGoodsCarInfo', jwt({ secret: secret.secretToken }), tokenManager.verifyToken, routes.goodsCar.getGoodsCarInfo);

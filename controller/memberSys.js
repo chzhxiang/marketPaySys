@@ -99,7 +99,7 @@ exports.createCoupon = (req,res) => {
                 cIdArr.push(e.couponId);
             });
             coupon.find({couponId:{"$in":cIdArr}},(reData)=>{
-                reData.forEach(re=>{
+                reData.items.forEach(re=>{
                     data.data.forEach(e=>{
                         e = re;
                     });
@@ -135,7 +135,7 @@ exports.getCouponListByShopId = (req,res)=>{
                 cIdArr.push(e.couponId);
             });
             myCoupon.find({couponId:{"$in":cIdArr}},(reData)=>{
-                reData.forEach(re=>{
+                reData.items.forEach(re=>{
                     data.data.forEach(e=>{
                         e.isGet = false;
                         if(re.userid === req.user.user._id){

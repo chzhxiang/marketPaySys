@@ -50,17 +50,19 @@ exports.getMyIntegrals = (req,res)=>{
  exports.myWallet = (req,res)=>{
      const query = {userId:req.user.user._id};
      const myCoupon = new pm('myCoupon');
+    
      myCoupon.pagetotal(query,count=>{
-         if(!count.status&&count>0){
+         if(!count.status&&count>=0){
             myWallet.findOne(query,null,result=>{
-                if(result.stauts>0){
+                
+                if(result.status>0){
                     let data = {};
-                    data.userId = result.items.userId||req.user.user._id;
-                    data.money = result.itmes.money||0; //余额
+                    data.userId = req.user.user._id;
+                    data.money = result.items.money||0; //余额
                     data.integrals = result.items.integrals||0;//积分
                     data.coupons = count||0;//优惠券
                     data.grade = 1;//会员等级
-                    data.memberId = result.items.memberId;//会员Id
+                    data.memberId = result.items.memberId||req.user.user._id;//会员Id
                     return res.json({code:200,msg:'查询完成',data:data});
                 }else{
                     return res.json({code:400,msg:'网络错误',data:{}})

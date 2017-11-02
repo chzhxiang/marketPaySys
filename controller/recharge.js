@@ -19,8 +19,8 @@ const alipay = require('./../alipay/index');
 exports.getRechargeList = (req,res) => {
     const query = { userId: req.user.user._id };
     const sort = ['times', -1];
-    const page_size = Number(params.page_size);
-    const page = Number(params.page);
+    const page_size = Number(req.params.page_size);
+    const page = Number(req.params.page);
 
     reCharge.pagesSel(query, page_size, page, sort, (data) => {
         try {
