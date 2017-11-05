@@ -9,7 +9,7 @@ var db = require('./mongo.js');
 var status = require('./status.js');
 var tool;
 
-var mongoskin = require('mongoskin');
+// var mongoskin = require('mongoskin');
 var ObjectID = require('mongodb').ObjectID;
 
 var CRUD = function (collection) {
@@ -121,6 +121,7 @@ CRUD.prototype = {
 
     read: function (query, callback) {
 
+
         db[this.collection].find(query).toArray(function (err, items) {
 
             if (err) {
@@ -188,7 +189,7 @@ CRUD.prototype = {
 
                     message: status.success.message,
 
-                    items: items
+                    items: items||{},
 
                 };
                 return callback(obj);
@@ -209,7 +210,7 @@ CRUD.prototype = {
                 
                     message: status.success.message,
                 
-                    items: items
+                    items: items||{}
                 
                 };
                 return callback(obj);
