@@ -1,7 +1,7 @@
 const pm = require( './../models/publicModel');
 const coupon = new pm('coupon');
 const ObjectID = require('mongodb').ObjectID;
-
+const moment = require('moment');
 /**
  * 生成优惠券
  * @params = {
@@ -22,6 +22,7 @@ const ObjectID = require('mongodb').ObjectID;
  *  goodsName:'',
  * }
  */
+
 
 exports.createCoupon = (req,res) => {
     req.body.count = Number(req.body.count);
@@ -90,9 +91,9 @@ exports.createCoupon = (req,res) => {
   exports.getMyCoupon = (req,res)=>{
     const myCoupon = new pm('myCoupon');
     const query = {userId:req.user.user._id};
-    req.params.page_size = Number(req.params.page_size);
-    req.params.page = Number(req.params.page);
-    myCoupon.pagesSel(query,req.params.page_size,req.params.page,null,(data)=>{
+    req.query.page_size = Number(req.query.page_size);
+    req.query.page = Number(req.query.page);
+    myCoupon.pagesSel(query,req.query.page_size,req.query.page,null,(data)=>{
         if(data.code===200){
             let cIdArr = [];
             data.data.forEach(e=>{
@@ -125,10 +126,10 @@ exports.createCoupon = (req,res) => {
 
 exports.getCouponListByShopId = (req,res)=>{
     const myCoupon = new pm('myCoupon');
-    const query = {shopId:req.params.shopId};
-    req.params.page_size = Number(req.params.page_size);
-    req.params.page = Number(req.params.page);
-    coupon.pagesSel(query,req.params.page_size,req.params.page,null,(data)=>{
+    const query = {shopId:req.query.shopId};
+    req.query.page_size = Number(req.query.page_size);
+    req.query.page = Number(req.query.page);
+    coupon.pagesSel(query,req.query.page_size,req.query.page,null,(data)=>{
         if(data.code===200){
             let cIdArr = [];
             data.data.forEach(e=>{
@@ -152,6 +153,7 @@ exports.getCouponListByShopId = (req,res)=>{
 }
 
 
+
 /**
  * 根据shopId获取最新优惠券
  * get请求
@@ -161,9 +163,9 @@ exports.getCouponListByShopId = (req,res)=>{
  */
 
  exports.getCouponByShopId = (req,res)=>{
-     let query = {shopId:'9999'}//平台id  
+     let query = {shopId:'9999',overplus:{"$gte":1}}//平台id  
     if(req.body.shopId){
-        query = {shopId:req.params.shopId};
+        query.shopId=req.query.shopId;
     }
     const sort = {sort: [[createTime,-1]]};
     const myCoupon = new pm('myCoupon');
@@ -201,10 +203,10 @@ exports.getCouponListByShopId = (req,res)=>{
  */
 
  exports.getCouponInfoById = (req,res)=>{
-     if(req.params.couponId){
+     if(req.query.couponId){
          return res.json({code:400,msg:缺少参数});
      }
-     const query = {couponId:req.params.couponId};
+     const query = {couponId:req.query.couponId};
      coupon.find(query,(result)=>{
          if(result.status>0){
              if(result.item[0].endTime){
