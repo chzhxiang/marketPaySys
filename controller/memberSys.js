@@ -28,7 +28,7 @@ exports.createCoupon = (req,res) => {
     req.body.count = Number(req.body.count);
     if(req.body.couponId){
         const query = {couponId:req.body.couponId};
-        const setModel = {count:{"$inc":req.body.count},overplus:{"$inc":req.body.count}};//overplus 剩余
+        const setModel = {$inc:{"count":req.body.count},$inc:{"overplus":req.body.count}};//overplus 剩余
         coupon.update(query,setModel,(data)=>{
             if(data.status>0)
                 return res.json({code:200,msg:'修改成功'});
@@ -58,12 +58,12 @@ exports.createCoupon = (req,res) => {
      const myCoupon = new pm('myCoupon');
      req.body.userId = req.user.user._id;
      coupon.find({shopId:req.body.shopId,couponId:req.body.couponId},(result)=>{
-        if(reslult.status>0&&result.items.length>0){
+        if(result.status>0&&result.items.length>0){
             req.body.shopIdArr = result.items[0].shopIdArr;
             myCoupon.save(req.body,(data)=>{
-                if(data.status>0&&data.items.length>0){
-                    const query = {_id:ObjectID(req.body.couponId)};
-                    const setModel = {overplus:{"$inc":-1}};
+                if(data.status>0){
+                    const query = {couponId:req.body.couponId};
+                    const setModel = {$inc:{"overplus":-1}};
                     //优惠券总数减一
                     coupon.update(query,setModel,(data)=>{});
                     return res.json({code:200,msg:'领取成功'});
@@ -100,13 +100,10 @@ exports.createCoupon = (req,res) => {
                 cIdArr.push(e.couponId);
             });
             coupon.find({couponId:{"$in":cIdArr}},(reData)=>{
-                reData.items.forEach(re=>{
-                    data.data.forEach(e=>{
-                        e = re;
-                    });
-                })
+                data.data = reData.items;
+                return res.send(data);
             })
-            return res.send(data);
+            
         }else{
             return res.json({code:400,msg:'系统错误'})
         }
@@ -135,17 +132,21 @@ exports.getCouponListByShopId = (req,res)=>{
             data.data.forEach(e=>{
                 cIdArr.push(e.couponId);
             });
-            myCoupon.find({couponId:{"$in":cIdArr}},(reData)=>{
-                reData.items.forEach(re=>{
-                    data.data.forEach(e=>{
-                        e.isGet = false;
-                        if(re.userid === req.user.user._id){
-                            e.isGet = true;
-                        }
-                    });
-                })
+            myCoupon.find({userId:req.user.user._id,couponId:{"$in":cIdArr}},(reData)=>{
+                data.data.forEach(e=>{
+                    e.isGet = false;
+                    if(reData&&reData.items&&reData.items.length>0){
+                        reData.items.forEach(re=>{
+                            if(re.couponId === e.couponId){
+                                e.isGet = true;
+                            }
+                        })
+                    }
+                });
+                
+                return res.send(data);
             })
-            return res.send(data);
+            
         }else{
             return res.json({code:400,msg:'系统错误'})
         }
