@@ -22,7 +22,49 @@ const moment = require('moment');
  *  goodsName:'',
  * }
  */
+// (()=>{
+//     const obj = [{
+//           startTime:'',
+//           endTime:'',
+//           moneny:'5',//5折
+//           shopIdArr:[{_id:'5992b8825a8e73041863800b',name:'乐购超市(五缘湾店)'}],//适用店铺
+//           goodsIdArr:[],//不参加商品
+//           fullMoneny:'',
+//           overplus:100,
+//           couponId:new ObjectID().toString(),
+//           shopId:'9999',
+//           mType:2,//===1 满减 ===2 折扣
+//           couponType:1,//===1 门店  ===2 商品,
+//           rule:'',//使用规则
+//           couponName:'全部商品5折',
+//           goodsImg:'',
+//           goodsName:'',
+//         },{
+//             startTime:'',
+//             endTime:'',
+//             moneny:'8',
+//             shopIdArr:[{_id:'5992b8825a8e73041863800b',name:'乐购超市(五缘湾店)'}],//适用店铺
+//             goodsIdArr:[],//不参加商品
+//             fullMoneny:'',
+//             overplus:100,
+//             couponId:new ObjectID().toString(),
+//             shopId:'9999',
+//             mType:2,//===1 满减 ===2 折扣
+//             couponType:1,//===1 门店  ===2 商品,
+//             rule:'',//使用规则
+//             couponName:'全部商品8折',
+//             goodsImg:'',
+//             goodsName:'',
+//           }];
+//         obj.forEach(e=>{
+//             e.startTime = new Date('2017-11-06').getTime();
+//             e.endTime = Number(moment(e.startTime).add(15,'day').add(15, 'hours').add(59, 'minutes').add(59, 'seconds').format('x'));
+//         })
+//         coupon.insert(obj,(data)=>{
 
+//         })
+
+// })()
 
 exports.createCoupon = (req,res) => {
     req.body.count = Number(req.body.count);

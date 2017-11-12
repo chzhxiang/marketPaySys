@@ -122,28 +122,42 @@ exports.createOrder = (req, res) => {
         req.body.countAll += Number(e.price)*Number(e.count);
     });
     req.body.payMoney = req.body.countAll;
-    //查询优惠券
-    const myCoupon = new pm('myCoupon');
-    const query = {userId:req.user.user._id,"shopIdArr._id":req.body.shopId};
-    myCoupon.find(query,(data)=>{
-        if(data.status>0&&data.items.length>0){
-            let cIdArr = [];
-            data.items.forEach(e=>{
-                cIdArr.push(e.couponId);
-            }); 
-            const sort = {sort:[['moneny',-1]]}
-            coupon.findOne({couponId:{"$in":cIdArr},fullMoneny:{"$lte":req.body.countAll}},sort,(reData)=>{
-                if(reData.status>0&&reData.items.couponId){
-                   req.body.payMoney = req.body.countAll - Number(reData.items.money);//需要支付的金额
-                   req.body.couponId = reData.items.couponId;
-                   req.body.isCoupon = 1;
-                }
-                saveMKorders(req.body, res);
-            })
-        }else{
+    if(req.body.couponId){
+        coupon.findOne({couponId:req.body.couponId},null,(reData)=>{
+            if(reData.status>0&&reData.items.couponId){
+               req.body.payMoney = req.body.countAll - Number(reData.items.money);//需要支付的金额
+               req.body.couponId = reData.items.couponId;
+               req.body.couponMoney = reData.items.money;
+               req.body.isCoupon = 1;
+            }
             saveMKorders(req.body, res);
-        }
-    })
+        })
+    }else{
+        saveMKorders(req.body, res);
+    }
+
+    //查询优惠券
+    //const myCoupon = new pm('myCoupon');
+    //const query = {userId:req.user.user._id,"shopIdArr._id":req.body.shopId};
+    // myCoupon.find(query,(data)=>{
+    //     if(data.status>0&&data.items.length>0){
+    //         let cIdArr = [];
+    //         data.items.forEach(e=>{
+    //             cIdArr.push(e.couponId);
+    //         }); 
+    //         const sort = {sort:[['moneny',-1]]}
+    //         coupon.findOne({couponId:{"$in":cIdArr},fullMoneny:{"$lte":req.body.countAll}},sort,(reData)=>{
+    //             if(reData.status>0&&reData.couponId){
+    //                req.body.payMoney = req.body.countAll - Number(reData.items.money);//需要支付的金额
+    //                req.body.couponId = reData.items.couponId;
+    //                req.body.isCoupon = 1;
+    //             }
+    //             saveMKorders(req.body, res);
+    //         })
+    //     }else{
+    //         saveMKorders(req.body, res);
+    //     }
+    // })
     
 };
 
