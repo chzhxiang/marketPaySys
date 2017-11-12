@@ -118,7 +118,7 @@
 
 
 
-const db = require('./../db/mongo.js');
+//const db = require('./../db/mongo.js');
 const CRUD = require('./../db/CURD');
 const async = require('async');
 
@@ -247,6 +247,11 @@ class pm {
         this.crud.aggregate(array,(data)=>{
             callback(data);
         });
+    };
+    insert(array,callback){
+        this.crud.insert(array,(data)=>{
+            callback(data);
+        })
     }
 }
 
