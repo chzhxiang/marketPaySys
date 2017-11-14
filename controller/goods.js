@@ -157,26 +157,27 @@ exports.getIntegralGoodByPage = (req,res) => {
         try {
             if(data.code === 200){
                 const _query = {userid:req.user.user._id};
+                const myIntegralGoods = new pm('myIntegralGoods');
                 myIntegralGoods.find(_query,reD=>{
                     if(reD.status>0){
-                        let reData = [];
+                        // let reData = [];
                         data.data.forEach((e)=> {
                             e.isGet = false;
                             reD.items.forEach(rD=>{
                                 if(rD.gid === e.gid){
                                     e.isGet = true;
                                 }
-                                reData.push({
-                                    gid:e.gid,
-                                    goodsName:e.goodsName,
-                                    imgUrls:e.imgUrls||'',
-                                    validTime:e.validTime||{},
-                                    integrals:e.integrals,
-                                    isGet:e.isGet,
-                                })
+                                // reData.push({
+                                //     gid:e.gid,
+                                //     goodsName:e.goodsName,
+                                //     imgUrls:e.imgUrls||'',
+                                //     validTime:e.validTime||{},
+                                //     integrals:e.integrals,
+                                //     isGet:e.isGet,
+                                // })
                             })
                         });
-                        data.data = reData;
+                        // data.data = reData;
                         return res.send(data);
                     }else{
                         return res.json({code:400,data:{},msg:'网络错误'});
@@ -194,7 +195,6 @@ exports.getIntegralGoodByPage = (req,res) => {
 }
 
 
-
 /**
  * 积分兑换商品
  * @params = {
@@ -205,11 +205,13 @@ exports.getIntegralGoodByPage = (req,res) => {
  exports.getGoodsByIntegrals = (req,res) => {
      const query = {gid:req.body.gid,stocks:{"$gte":1}};
      const sort = null;
+     const integralGoods = new pm('integralGoods');
      integralGoods.findOne(query,null,result=>{
         if(result.status>0){
             let  body = req.body;
             body.userid = req.user.user._id;
             body.goodsInfo = result.items;
+            const myIntegralGoods = new pm('myIntegralGoods');
             myIntegralGoods.save(body,re=>{
                 if(re.status>0){
                     const _query = {userId:req.user.user._id};
