@@ -103,6 +103,7 @@ exports.getOrderById = (req, res) => {
     //     return res.json({code:400,msg:'缺少参数shopId'})
     // }
 };
+
 /**
  * 下单
  * 校验库存/价格
@@ -121,17 +122,18 @@ exports.createOrder = (req, res) => {
     req.body.goodsInfo.forEach(e=>{
         req.body.countAll += Number(e.price)*Number(e.count);
     });
-    req.body.payMoney = req.body.countAll;
+    req.body.countAll = parseFloat(req.body.countAll).toFixed(2);
+    req.body.payMoney = Number(req.body.countAll);
     if(req.body.couponId){
         const coupon = new pm('coupon');
         coupon.findOne({couponId:req.body.couponId},null,(reData)=>{
             if(reData.status>0&&reData.items.couponId){
                 if(reData.items.mType===2){//折扣
-                    req.body.payMoney = parseFloat(req.body.countAll)*Number(reData.items.moneny)/10;//需要支付的金额
-                    req.body.couponMoney = parseFloat(req.body.countAll)-req.body.payMoney;
+                    req.body.payMoney = Number(parseFloat(Number(req.body.countAll)*Number(reData.items.moneny)/10).toFixed(2));//需要支付的金额
+                    req.body.couponMoney = Number(req.body.countAll)-req.body.payMoney;
                 }else{
-                    req.body.payMoney = parseFloat(req.body.countAll) - parseFloat(reData.items.moneny);//需要支付的金额
-                    req.body.couponMoney = reData.items.moneny;
+                    req.body.payMoney = Number(req.body.countAll) - Number(reData.items.moneny);//需要支付的金额
+                    req.body.couponMoney = Number(reData.items.moneny);
                 }
                 req.body.couponId = reData.items.couponId;
                 req.body.isCoupon = 1;
